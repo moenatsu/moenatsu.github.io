@@ -1,3 +1,9 @@
+---
+layout:     post
+title:      first
+category: blog
+description: 。。。
+---
 在viewDidLoad中加上如下代码：
  <pre><code>if ([self.tableView respondsToSelector:@selector(setSeparatorInset:)]) {
         
