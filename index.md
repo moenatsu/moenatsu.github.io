@@ -16,7 +16,7 @@ layout: home
         {% for post in site.categories.blog %}
             <li>
                 <h2><a href="{{ post.url }}">{{ post.title }}</a></h2>
-                <div class="title-desc">{{ post.description }}<h7><a href='{{post.url}}' title='阅读全文'>阅读全文</a></h7></div>
+                <div class="title-desc">{{ post.description }}</br><h7><a href='{{post.url}}' title='阅读全文'>阅读全文</a></h7></div>
             </li>
         {% endfor %}
         </ul>
