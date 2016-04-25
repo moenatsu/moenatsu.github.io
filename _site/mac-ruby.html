@@ -48,7 +48,7 @@
 
 <p>rvm是什么？为什么要安装rvm呢，因为rvm可以让你拥有多个版本的Ruby，并且可以在多个版本之间自由切换。</p>
 
-<p>###第一步：安装rvm</p>
+<h3 id="rvm">第一步：安装rvm</h3>
 
 <pre><code>$ curl -L get.rvm.io | bash -s stable
 $ source ~/.rvm/scripts/rvm
@@ -61,7 +61,7 @@ $ source ~/.rvm/scripts/rvm
 
 <p>如果能显示版本好则安装成功了。</p>
 
-<p>###第二步：安装ruby</p>
+<h3 id="ruby">第二步：安装ruby</h3>
 
 <p>列出ruby可安装的版本信息</p>
 
@@ -88,13 +88,16 @@ $ source ~/.rvm/scripts/rvm
 <pre><code>rvm remove 2.2.4
 </code></pre>
 
-<p>###第三步：更换源</p>
+<h3 id="section">第三步：更换源</h3>
 
 <p>查看已有的源</p>
 
-<pre><code>gem source 显示会如下：
+<pre><code>gem source
+</code></pre>
 
-CURRENT SOURCES
+<p>显示会如下：</p>
+
+<pre><code>CURRENT SOURCES
 http://rubygems.org/
 </code></pre>
 
@@ -103,7 +106,7 @@ http://rubygems.org/
 <pre><code>$ gem update --system
 $ gem uninstall rubygems-update
 $ gem sources -r http://rubygems.org/
-$ gem sources -a http://ruby.taobao.org
+$ gem sources -a https://ruby.taobao.org
 </code></pre>
 
 
@@ -139,8 +142,6 @@ $ gem sources -a http://ruby.taobao.org
             <li><a href="/mac-ruby">如何在Mac终端升级ruby版本【转】</a></li>
         
             <li><a href="/github-pages">使用Github Pages建独立博客</a></li>
-        
-            <li><a href="/why-blog">我为什么写博客？</a></li>
         
         </ul>
 
