@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!--
+    * Author:         BeiYuu
+    -->
+    <meta charset="utf-8" />
+    <title>Mac终端使用Tips | NatsuZone.com</title>
+    <meta name="author" content="Natsu" />
+    <meta name="renderer" content="webkit">
+    <meta name="description" content="Natsu's Blog" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+    <link rel="stylesheet" href="/css/default.css" type="text/css" />
+    <link rel="shortcut icon" href="/favicon.png" type="image/png" />
+    <link rel="alternate" type="application/atom+xml" title="Recent Entries" href="/atom.xml" />
+    <script src="/js/jquery-1.7.1.min.js" type="text/javascript"></script>
+</head>
+<body>
+
+    <div class="home-menu">
+        <div class="home-icon-con">
+            <a class="home-menu-icon" href="/">Natsu</a>
+            <a class="home-follow" href="#" title="Contact Me">+</a>
+        </div>
+        <div class="home-contact">
+            <a href="http://weibo.com/1720433822" target="_blank" style="margin-left:-5px;"><img src="http://www.weibo.com/favicon.ico" alt="" width="25"/></a>
+<!--            <a href="http://www.douban.com/people/beiyuu/" target="_blank" style="text-align:center;"><img src="http://www.douban.com/favicon.ico" alt="" width="22"/></a>-->
+<!--            <a href="http://instagram.com/beiyuu/" target="_blank" style="text-align:right"><img src="http://d36xtkk24g8jdx.cloudfront.net/bluebar/00c6602/images/ico/favicon.ico" alt="" width="22"/></a>-->
+        </div>
+    </div>
+
+    <link rel="stylesheet" href="/js/prettify/prettify.css" />
+<style type="text/css">
+    body { background:#e8e8e8; }
+    @media screen and (max-width: 750px){
+        body { background:#fff; }
+    }
+    @media screen and (max-width: 1020px){
+        body { background:#fff; }
+    }
+</style>
+
+<div id="content">
+    <div class="entry">
+        <h1 class="entry-title"><a href="/mac-command-line" title="Mac终端使用Tips">Mac终端使用Tips</a></h1>
+        <p class="entry-date">2016-04-27</p>
+        <p>本文主要总结了一些常用的mac终端命令行操作。熟练使用 command line 可以大大提高工作效率。</p>
+
+<h2 id="mac">个性化Mac终端</h2>
+<p>打开终端，首先映入眼帘的文字就是命令提示符了。提示符的状态是通过PS参数来设置的。基本的颜色代码和参数如下：</p>
+
+<pre><code># PS的作用
+PS1	提示文字和颜色
+PS2	指定光标	 
+# Reset
+ENDCOLOR='\e[0m'
+# Regular Colors
+Black='\e[0;30m'	# Black
+Red='\e[0;31m'		# Red
+Green='\e[0;32m'	# Green
+Yellow='\e[0;33m' 	# Yellow
+Blue='\e[0;34m'		# Blue
+Purple='\e[0;35m'	# Purple
+Cyan='\e[0;36m'		# Cyan
+White='\e[0;37m'	# White
+
+# 参数的含义
+\n 换行
+\r 回车
+\d 当前日期
+\t 当前时间（24小时制）
+\h 主机名（短）
+\u 当前用户名
+\$ root用户显示#,普通用户显示$
+\w 当前所在目录（短）
+</code></pre>
+
+<p>通过使用上面的代码和参数来实现自己想要的效果。具体操作如下:</p>
+
+<p>打开终端，输入</p>
+
+<pre><code>vi .bash_profile
+</code></pre>
+
+<p>在.bash_profile文件中，设置想要的提示符显示方式，如下是本人的一些配置：</p>
+
+<pre><code># xTerm-256color
+export LS_OPTIONS='--color=auto'
+export CLICOLOR='Yes'
+export LSCOLORS='Exfxcxdxbxegedabagacad'
+
+# Modify Terminal Prompt and Color
+case $(id -u) in
+	0)
+	STARTCOLOUR='\[\e[0;32m\]';
+		;;
+	*)
+	STARTCOLOUR='\[\e[0;35m\]';
+	;;
+esac
+ENDCOLOR="\[\e[0m\]"
+UNDERLINEBLUE="\[\e[4;34m\]"
+MYWORD="🐶 🐶 🐶 :"
+PS1="\n$STARTCOLOUR$MYWORD$ENDECOLOR $UNDERLINEBLUE\w$ENDCOLOR\n\$ ";
+</code></pre>
+
+<p>其中，<code>xTerm-256color</code>部分，是为了让执行 <code>ls </code>命令的时候不同的文件类型能够用颜色来区别，开启了 <code>ls Color</code>功能。同时，要确定 <code>偏好设置-描述文件-高级-Terminfo </code>声明终端为： <code>xterm-256color </code></p>
+
+<p>这之后重启终端后就可以看到效果了</p>
+
+<h2 id="section">常用终端命令</h2>
+
+<h3 id="man">man</h3>
+<p>大多数命令都会包含一个使用指南，会告诉你任何你需要知道的关于这个命令的所有细节，在命令行中输入 <code>man command-name </code>即可获取。</p>
+
+<p>使用上下左右箭头来移动翻页，按<code> Q </code>来退出使用指南界面。</p>
+
+<h3 id="pwd">pwd</h3>
+<p>显示当前目录的绝对路径。</p>
+
+<h3 id="cd">cd</h3>
+<p>改变当前目录到你指定的目录。如果你不指定，则会返回你的 home folder。<code>cd ..</code>返回上一个指定目录</p>
+
+<h3 id="ls">ls</h3>
+<p>查看指定目录下的文件。</p>
+
+<p><code>ls -la</code>可查看隐藏文件。添加了<code>-l</code>选项，目的是控制输出格式。如果你注意输出内容的话，会发现还包括.和..两项，它们分别表示当前文件夹和父文件夹。如果你不想显示这两项，只需要把<code>-a</code>改成<code>-A</code>即可。</p>
+
+<h3 id="cat">cat</h3>
+<p><code>cat</code>是“concatenate”的意思，会按顺序读取文件并输出到 Terminal 窗口，语法为cat后接你需要查看的文件的路径。<code>cat</code>命令也可以用»来增加文本文件的内容，例如命令<code>cat ../textOne.txt &gt;&gt; textTwo.txt</code>会把 textOne.txt 的内容添加到 textTwo.txt 的结尾。</p>
+
+<h3 id="less">less</h3>
+<p>这个命令更适合用来查看长文本文件，因为它会允许你查找文本。语法为 <code>less</code>后接文件路径，和<code>cat</code>一样。用<code>less</code>命令打开的文件其实和你查看命令使用指南的时候使用的是一个查看器，所以操作是相同的，同样可以使用箭头来上下移动文本，使用空格来翻页，输入<code>/</code>和关键字来按照关键字搜索，按<code>Q</code>来退出使用指南页面。除此之外，按<code>V</code>键来使用<code>vi</code>文本编辑器。</p>
+
+<h3 id="which">which</h3>
+<p>这个命令会定位某个命令的文件路径。换言之，它会告诉你你执行某个具体命令的时候，在使用哪个文件。语法为<code>which</code>后接某个命令。</p>
+
+<h3 id="file">file</h3>
+<p>这个命令会尝试根据文件的内容输出文件类型。如果一个文件缺失了扩展名，那么这个命令可能会非常有用。语法为<code>file</code>后接文件路径。</p>
+
+<h3 id="find">find</h3>
+<p>这个命令用来根据搜索关键词定位文件路径。 <code>find</code>命令不使用 Spotlight 搜索服务，但是它允许你设置非常具体的搜索条件，以及通配符。语法为<code>find</code>后接搜索的起始路径，后接定义搜索的选项，后接搜索内容（包含在引号里）。</p>
+
+<h3 id="wildcard-characters">使用通配符（Wildcard Characters）</h3>
+<p>下面是常用的通配符：</p>
+
+<ul>
+  <li>星号（＊，Asterisk）——代表任何长度的任何字符。例如<code>*.tiff</code>代表所有格式为tiff的文件。</li>
+  <li>问号（?，Question mark）——代表任何单个字符。例如<code>b?ok</code>匹配 book 但是不匹配 brook。</li>
+  <li>方括号（[]，Square brackets）——定义一定范围的字符，例如<code>[Dd]ocument</code>匹配 Document 以及 document；<code>doc[1-9]</code>匹配doc1, doc2, …, doc9。</li>
+</ul>
+
+<p>配合使用上面三种通配符可以大大提高效率。</p>
+
+<h3 id="mkdir">mkdir</h3>
+<p>用来创建文件夹，语法为<code>mkdir</code>后接新文件夹的目录。可以用-p选项，来一起创建路径中不存在的文件夹（这样你就不用挨层创建了）。</p>
+
+<h3 id="cp">cp</h3>
+<p>用来把文件从一处复制到另一处。语法为<code>cp</code>后接原始路径，后接目标路径。如果你想复制整个文件夹和所有内容，需要添加<code>-R</code>选项。如果指定的目标路径不含文件名，则 cp 命令会按原名复制。如果指定的目标路径包括文件名，则会复制为你指定的文件名。如果仅指定新文件名，则会在原处以新名称创建文件副本。注意，系统会自动替换同名文件而不出现提示。</p>
+
+<h3 id="mv">mv</h3>
+<p>用来移动文件。语法为<code>mv</code>后接原路径，后接新路径。mv 的指定路径规则和 cp 是一样的（没错，如果仅指定新文件名，它就成了重命名命令）。</p>
+
+<h3 id="rm">rm</h3>
+<p>会永久删除文件。注意，command-line中没有废纸篓。语法为<code>rm</code>后接文件路径。然而，使用 rm 命令删除的文件有可能可以通过数据恢复工具恢复。如果希望安全删除文件，可以使用<code>srm</code>命令。</p>
+
+<h3 id="rmdirrm--r">rmdir和rm -R</h3>
+<p>rmdir是“remove directory”的缩写，这个命令会永久删除文件夹。再强调一遍，CLI 中木有废纸篓。语法为<code>rmdir</code>后接希望删除目录的路径。然而，rmdir 命令无法删除含有任何其他文件的文件夹，所以大多数情形下<code>rmdir</code>命令是不适用的。不过，你可以利用<code>rm</code>添加<code>-R</code>选项来删除文件夹及包含的所有文件。</p>
+
+<h3 id="vi">vi</h3>
+<p>vi 是 command line 中最常见的文本编辑器。用<code>vi</code>打开文本文件，只需要输入vi后接文件路径即可。Mac OS X 还提供了<code>nano</code>，一个更加现代的文本编辑器。它也更加方便，例如在底部有常用的快捷键列表.</p>
+
+<p>和<code>less</code>命令类似，<code>vi</code>命令会占用整个 Terminal 空间来显示文件内容。打开后，在“command模式”，vi 会等你输入一些预定义字符来告诉 vi 你想做什么。你也可以使用键盘上的箭头键单纯地浏览文件。你想编辑时，按<code>I</code>开始（会进入编辑模式）。文字会插入到光标处。如果你想保存，需要先退出编辑模式进入 command 模式。方法是按下esc键。回到 command 模式后，输入<code>:wq</code>,回车。如果你不想保存，在 command 模式输入<code>:q!</code>，回车退出。</p>
+
+<h3 id="sudo">sudo</h3>
+<p>用sudo执行一个命令会使用 root 账户权限。</p>
+
+<h3 id="sqlite3">sqlite3</h3>
+<p>mac自带sqlite3命令行工具。</p>
+
+<p><code>sqlite3 filename.sqlitedb</code>连接到指定的数据库文件。</p>
+
+<p><code>sqlite&gt;.exit</code>退出SQLite客户端软件。</p>
+
+<p><code>sqlite&gt;.tables</code>显示用于创建一个表的SQL语句。</p>
+
+<p><code>sqlite&gt;.dump table-name</code>将整个表的内容转储成SQL语句。</p>
+
+<p><code>sqlite&gt;.output filename</code>将后续命令输出重定位到磁盘上的文件。</p>
+
+<p><code>sqlite&gt;.headers on</code>打开表头显示。</p>
+
+<p><code>sqlite&gt;select * from table-name；</code>执行SQL语句（注：sql语句最后要加”;”）。</p>
+
+<h2 id="section-1">参考文章</h2>
+<p><a href="https://www.renfei.org/blog/mac-os-x-terminal-101.html">《Mac OS X Terminal 101：终端使用初级教程》</a></p>
+
+<p><a href="http://imwuyu.me/talk-about/modify-mac-osx-terminal-prompt-and-color.html/">《给 Terminal 施点魔法》</a></p>
+
+        <br/>
+        <br/>
+        <hr/>
+        <!-- 多说评论框 start -->
+        <div class="ds-thread" data-thread-key="/mac-command-line" data-title="Mac终端使用Tips" data-url="/mac-command-line"></div>
+        <!-- 多说评论框 end -->
+        <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+        <script type="text/javascript">
+            var duoshuoQuery = {short_name:"natsu"};
+            (function() {
+             var ds = document.createElement('script');
+             ds.type = 'text/javascript';ds.async = true;
+             ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+             ds.charset = 'UTF-8';
+             (document.getElementsByTagName('head')[0]
+              || document.getElementsByTagName('body')[0]).appendChild(ds);
+             })();
+        </script>
+        <!-- 多说公共JS代码 end -->
+    </div>
+    
+    <div class="sidenav">
+        <iframe width="100%" height="75" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=75&fansRow=2&ptype=1&speed=0&skin=5&isTitle=0&noborder=0&isWeibo=0&isFans=0&uid=1720433822&verifier=f6339243&dpc=1"></iframe>
+    </div>
+
+    <div class="sidenav">
+        <h2>Blog</h2>
+        <ul class="artical-list">
+        
+            <li><a href="/mac-command-line">Mac终端使用Tips</a></li>
+        
+            <li><a href="/mac-ruby">如何在Mac终端升级ruby版本【转】</a></li>
+        
+            <li><a href="/github-pages">使用Github Pages建独立博客</a></li>
+        
+        </ul>
+
+        <h2>Opinion</h2>
+        <ul class="artical-list">
+        
+            <li><a href="/about-simplify">胡言乱语说简单</a></li>
+        
+        </ul>
+
+        <h2>Project</h2>
+        <ul class="artical-list">
+        
+            <li><a href="/tabby">Tabby</a></li>
+        
+            <li><a href="/notty-notes">Notty Notes</a></li>
+        
+            <li><a href="/overapi-cheatsheet">OverAPI</a></li>
+        
+            <li><a href="/raining-in-chrome">听雨</a></li>
+        
+        </ul>
+    </div>
+</div>
+
+
+
+<script src="/js/post.js" type="text/javascript"></script>
+
+
+    <script type="text/javascript">
+        $(function(){
+            $('.home-follow').click(function(e){
+                e.preventDefault();
+
+                if($('.home-contact').is(':visible')){
+                    $('.home-contact').slideUp(100);
+                }else{
+                    $('.home-contact').slideDown(100);
+                }
+            });
+        })
+    </script>
+</body>
+</html>
