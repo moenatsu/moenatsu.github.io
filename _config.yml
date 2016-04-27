@@ -4,6 +4,7 @@ markdown: kramdown
 pygments: true
 paginate: 8
 permalink: /:title
+highlighter: rouge
 
 title: NatsuZone.com
 url: http://www.natsuzone.com
