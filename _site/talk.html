@@ -5,7 +5,7 @@
     * Author:         BeiYuu
     -->
     <meta charset="utf-8" />
-    <title>如何在Mac终端升级ruby版本【转】 | NatsuZone.com</title>
+    <title>杂谈 | NatsuZone.com</title>
     <meta name="author" content="Natsu" />
     <meta name="renderer" content="webkit">
     <meta name="description" content="Natsu's Blog" />
@@ -42,79 +42,21 @@
 
 <div id="content">
     <div class="entry">
-        <h1 class="entry-title"><a href="/mac-ruby" title="如何在Mac终端升级ruby版本【转】">如何在Mac终端升级ruby版本【转】</a></h1>
-        <p class="entry-date">2016-04-25</p>
-        <p>原文地址：<a href="https://segmentfault.com/a/1190000003784636 ">https://segmentfault.com/a/1190000003784636</a></p>
+        <h1 class="entry-title"><a href="/talk" title="杂谈">杂谈</a></h1>
+        <p class="entry-date">2016-05-25</p>
+        <p>这个博客网站是基于jekyll搭建的，整个项目是参考<a href="http://beiyuu.com">BeiYuu</a>的<a href="http://beiyuu.com/github-pages">《使用Github Pages建独立博客》</a>这篇文章所完成的，在此特别感谢。</p>
 
-<p>rvm是什么？为什么要安装rvm呢，因为rvm可以让你拥有多个版本的Ruby，并且可以在多个版本之间自由切换。</p>
+<p>网站其实在几个月前就搭建好了，只是里面一直没有什么东西罢了，最近比较闲（其实一直都比较闲，就是懒），才写了几篇博客（或者说是搬了几篇博客更合适吧 ฅ•ω•ฅ）。</p>
 
-<h2 id="rvm">第一步：安装rvm</h2>
+<p>不管怎么说，总算是有点像是一个个人博客了吧😂。以后也会慢慢往里面写一些东西的吧。</p>
 
-<pre><code>$ curl -L get.rvm.io | bash -s stable
-$ source ~/.rvm/scripts/rvm
-</code></pre>
-
-<p>等待终端加载完毕,后输入：</p>
-
-<pre><code>rvm -v
-</code></pre>
-
-<p>如果能显示版本好则安装成功了。</p>
-
-<h2 id="ruby">第二步：安装ruby</h2>
-
-<p>列出ruby可安装的版本信息</p>
-
-<pre><code>rvm list known
-</code></pre>
-
-<p>安装一个ruby版本</p>
-
-<pre><code>rvm install 2.2.4
-</code></pre>
-
-<p>如果想设置为默认版本，可以用这条命令来完成</p>
-
-<pre><code>rvm use 2.2.4 --default
-</code></pre>
-
-<p>查看已安装的ruby</p>
-
-<pre><code>rvm list
-</code></pre>
-
-<p>卸载一个已安装ruby版本</p>
-
-<pre><code>rvm remove 2.2.4
-</code></pre>
-
-<h2 id="section">第三步：更换源</h2>
-
-<p>查看已有的源</p>
-
-<pre><code>gem source
-</code></pre>
-
-<p>显示会如下：</p>
-
-<pre><code>CURRENT SOURCES
-http://rubygems.org/
-</code></pre>
-
-<p>然后我们需要来修改更换源（由于国内被墙）所以要把源切换至淘宝镜像服务器 在终端执行以下命令</p>
-
-<pre><code>$ gem update --system
-$ gem uninstall rubygems-update
-$ gem sources -r http://rubygems.org/
-$ gem sources -a https://ruby.taobao.org
-</code></pre>
-
+<p>自己想做的事情还是挺多的，但大多也就在那空想，又不付诸行动。。。因为比较懒嘛，慢慢来吧。。。</p>
 
         <br/>
         <br/>
         <hr/>
         <!-- 多说评论框 start -->
-        <div class="ds-thread" data-thread-key="/mac-ruby" data-title="如何在Mac终端升级ruby版本【转】" data-url="/mac-ruby"></div>
+        <div class="ds-thread" data-thread-key="/talk" data-title="杂谈" data-url="/talk"></div>
         <!-- 多说评论框 end -->
         <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
         <script type="text/javascript">
