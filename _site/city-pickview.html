@@ -5,7 +5,7 @@
     * Author:         BeiYuu
     -->
     <meta charset="utf-8" />
-    <title>在ARC下调用performSelector方法导致的内存泄露问题 | NatsuZone.com</title>
+    <title>城市选择器 | NatsuZone.com</title>
     <meta name="author" content="Natsu" />
     <meta name="renderer" content="webkit">
     <meta name="description" content="Natsu's Blog" />
@@ -42,103 +42,19 @@
 
 <div id="content">
     <div class="entry">
-        <h1 class="entry-title"><a href="/arc-leak" title="在ARC下调用performSelector方法导致的内存泄露问题">在ARC下调用performSelector方法导致的内存泄露问题</a></h1>
-        <p class="entry-date">2016-06-07</p>
-        <p>当我们使用<code>performSelector</code>方法的时候，如：</p>
+        <h1 class="entry-title"><a href="/city-pickview" title="城市选择器">城市选择器</a></h1>
+        <p class="entry-date">2016-06-16</p>
+        <p>一个简单的城市选择器，使用coredata来进行数据的存储与查询。</p>
 
-<pre><code>[object performSelector:@selector(someMethod)];
+<p><img src="/images/city_pickview/city-pickview.png" alt="city-pickview" /></p>
 
-[object performSelector:NSSelectorFromString(@"someMethod")];
-</code></pre>
-
-<p>在ARC情况下，可能会导致编译器报如下警告：</p>
-
-<pre><code>"performSelector may cause a leak because its selector is unknown".
-</code></pre>
-
-<h3 id="section">原因</h3>
-<p>由于这段代码是动态的调用<code>someMethod</code>方法，编译器并不了解这个方法的返回值，因此编译器也无法用ARC的内存管理机制来进行管理。ARC对此的做法就是不添加释放操作，因此当调用的方法会使调用对象引用计数增加时，将会导致内存泄露。</p>
-
-<h3 id="section-1">解决方法</h3>
-
-<h4 id="c">1.利用C函数指针方法调用函数</h4>
-<p>你可以将上面的方法调用改写成如下方式：</p>
-
-<pre><code>if (!object) { return; }
-SEL selector = NSSelectorFromString(@"someMethod");
-IMP imp = [object methodForSelector:selector];
-void (*func)(id, SEL) = (void *)imp;
-func(object, selector);
-</code></pre>
-
-<p>或者，你可以写的更简单一点：</p>
-
-<pre><code>SEL selector = NSSelectorFromString(@"someMethod");
-((void (*)(id, SEL))[object methodForSelector:selector])(object, selector);
-</code></pre>
-
-<p>如果方法有返回值或者需要传入参数的话，你需要做一些改变，例如：</p>
-
-<pre><code>SEL selector = NSSelectorFromString(@"processRegion:ofView:");
-IMP imp = [object methodForSelector:selector];
-CGRect (*func)(id, SEL, CGRect, UIView *) = (void *)imp;
-CGRect result = object ? func(object, selector, someRect, someView) : CGRectZero;
-</code></pre>
-
-<h4 id="section-2">2.让编译器忽略这些警告</h4>
-<p>通过使用<code>clang diagnostic ignored</code>来使编译器忽略指定的警告，如果你有多处报这个警告的话，你可以定义如下的宏来使代码更简洁。</p>
-
-<pre><code>#define SuppressPerformSelectorLeakWarning(Stuff) \
-do { \
-    _Pragma("clang diagnostic push") \
-    _Pragma("clang diagnostic ignored \"-Warc-performSelector-leaks\"") \
-    Stuff; \
-    _Pragma("clang diagnostic pop") \
-} while (0)
-</code></pre>
-
-<p>在使用时，你只需要这样做：</p>
-
-<pre><code>SuppressPerformSelectorLeakWarning(
-    [_target performSelector:_action withObject:self]
-);
-</code></pre>
-
-<p>如果你需要方法的返回值的话，你可以这样做：</p>
-
-<pre><code>id result;
-SuppressPerformSelectorLeakWarning(
-	result = [_target performSelector:_action withObject:self]
-);
-</code></pre>
-
-<h3 id="section-3">总结</h3>
-<p>当你无法确定调用的方法是否会造成内存泄露时，最好不要这样做。例如当你在调用类似<code>initSomething</code>、<code>newSomething</code>、<code>somethingCopy</code>等会使引用计数增加方法时，是可能会导致内存泄露。例如，如下的调用回导致内存泄漏：</p>
-
-<pre><code>NSArray *array = @[@"a",@"b"];
-[array performSelector:NSSelectorFromString(@"copy")];
-</code></pre>
-
-<p>在Xcode7.3版本中，使用如下写法：</p>
-
-<pre><code>NSArray *array = @[@"a",@"b"];
-[array performSelector:@selector(copy)];
-</code></pre>
-
-<p>此时编译器会直接报错：</p>
-
-<pre><code>PerformSelector names a selector which retains the object
-</code></pre>
-
-<p>这时无论使用上述哪种方法都无法解决内存泄漏。在MRC模式下，加上<code>array = nil;</code>是可以解决内存泄漏的，但是在ARC模式下不行。在网上也看了好多资料，试了多种方法，但这个问题还是没有解决。所以，在ARC模式下，尽量不要使用<code>performSelector</code>方法来调用<code>initSomething</code>、<code>newSomething</code>、<code>somethingCopy</code>等会使引用计数增加方法。最后，如果你有什么更好的建议，请在评论区留言。</p>
-
-<p>参考资料：<a href="http://stackoverflow.com/questions/7017281/performselector-may-cause-a-leak-because-its-selector-is-unknown">http://stackoverflow.com/questions/7017281/performselector-may-cause-a-leak-because-its-selector-is-unknown</a></p>
+<p><a href="https://github.com/moenatsu/city-pickview">demo源码</a></p>
 
         <br/>
         <br/>
         <hr/>
         <!-- 多说评论框 start -->
-        <div class="ds-thread" data-thread-key="/arc-leak" data-title="在ARC下调用performSelector方法导致的内存泄露问题" data-url="/arc-leak"></div>
+        <div class="ds-thread" data-thread-key="/city-pickview" data-title="城市选择器" data-url="/city-pickview"></div>
         <!-- 多说评论框 end -->
         <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
         <script type="text/javascript">
