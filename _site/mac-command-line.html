@@ -192,10 +192,91 @@ PS1="\n$STARTCOLOUR$MYWORD$ENDECOLOR $UNDERLINEBLUE\w$ENDCOLOR\n\$ ";
 
 <p><code>sqlite&gt;select * from table-name；</code>执行SQL语句（注：sql语句最后要加”;”）。</p>
 
+<h3 id="nslookup">nslookup</h3>
+<p>nslookup(name server lookup)是一个程序的名字，是一个用于查询Internet域名信息或诊断DNS服务器问题的工具。用户通过输入一个主机名可以发现相应的IP地址，相反的，输入IP地址可以找出主机名。用法如下：</p>
+
+<pre><code>nslookup domain [dns-server]
+</code></pre>
+
+<p>如果没有指定dns-server，将会使用系统默认的服务器。</p>
+
+<p>例如输入：</p>
+
+<pre><code>nslookup www.baidu.com
+</code></pre>
+
+<p>返回的信息是：</p>
+
+<pre><code>Server:		8.8.8.8
+Address:	8.8.8.8#53
+
+Non-authoritative answer:
+www.baidu.com	canonical name = www.a.shifen.com.
+Name:	www.a.shifen.com
+Address: 119.75.213.51
+Name:	www.a.shifen.com
+Address: 119.75.213.50
+</code></pre>
+
+<p>还可以指定一些其他参数，来查询更具体信息。例如：</p>
+
+<pre><code>nslookup -qt=type domain [dns-server]
+
+nslookup –d [其他参数] domain [dns-server]
+</code></pre>
+
+<h3 id="kill">kill</h3>
+<p>kill命令用来终止一个进程。用法为：</p>
+
+<pre><code>kill [－s signal | －p] [－a] pid ...
+kill －l [signal]
+</code></pre>
+
+<p>其中<code>－s</code>指定发送的信号，<code>－p</code>模拟发送信号，<code>－l</code>：指定信号的名称列表，<code>pid</code>要中止进程的ID号，<code>signal</code>表示信号。</p>
+
+<p>例如：</p>
+
+<pre><code>kill 1105
+</code></pre>
+
+<p>将会终止PID为1105的进程。</p>
+
+<h3 id="ping">ping</h3>
+<p>ping命令用来检测主机网络接口状态，使用方法如下：</p>
+
+<pre><code>ping [-dfnqrRv][-c][-i][-I][-l][-p][-s][-t] IP地址
+</code></pre>
+
+<p><code>-d</code>：使用Socket的SO_DEBUG功能。
+<code>-c</code>：设置完成要求回应的次数。
+<code>-f</code>：极限检测。
+<code>-i</code>：指定收发信息的间隔秒数。
+<code>-I</code>：网络界面使用指定的网络界面送出数据包。
+<code>-l</code>：前置载入，设置在送出要求信息之前，先行发出的数据包。
+<code>-n</code>：只输出数值。
+<code>-p</code>：设置填满数据包的范本样式。
+<code>-q</code>：不显示指令执行过程，开头和结尾的相关信息除外。
+<code>-r</code>：忽略普通的Routing Table，直接将数据包送到远端主机上。
+<code>-R</code>：记录路由过程。
+<code>-s</code>：设置数据包的大小。
+<code>-t</code>：设置存活数值TTL的大小。
+<code>-v</code>：详细显示指令的执行过程。</p>
+
+<h3 id="shutdown">shutdown</h3>
+<p>shutdown命令可用来设置mac的定时关机、重启、睡眠。用法如下：</p>
+
+<pre><code>shutdown [-h | -r | -s] time
+</code></pre>
+
+<p>其中，h/r/s分别代表关机/重启/睡眠，time表示时间。如果要立即执行，可将time设置为now。如果，要取消的话，使用kill命令即可。</p>
+
 <h2 id="section-1">参考文章</h2>
+
 <p><a href="https://www.renfei.org/blog/mac-os-x-terminal-101.html">《Mac OS X Terminal 101：终端使用初级教程》</a></p>
 
-<p><a href="http://imwuyu.me/talk-about/modify-mac-osx-terminal-prompt-and-color.html/">《给 Terminal 施点魔法》</a></p>
+<p><a href="http://imwuyu.me/talk-about/modify-mac-osx-terminal-prompt-and-color.html">《给 Terminal 施点魔法》</a></p>
+
+<p><a href="http://www.cnblogs.com/earl86/archive/2009/02/06/1666439.html">《常用cmd命令——nslookup命令》</a></p>
 
         <br/>
         <br/>

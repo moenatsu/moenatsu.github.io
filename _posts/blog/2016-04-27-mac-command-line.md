@@ -151,7 +151,81 @@ mac自带sqlite3命令行工具。
 
 `sqlite>select * from table-name；`执行SQL语句（注：sql语句最后要加";"）。
 
-## 参考文章
-<a href='https://www.renfei.org/blog/mac-os-x-terminal-101.html'>《Mac OS X Terminal 101：终端使用初级教程》</a>
+### nslookup
+nslookup(name server lookup)是一个程序的名字，是一个用于查询Internet域名信息或诊断DNS服务器问题的工具。用户通过输入一个主机名可以发现相应的IP地址，相反的，输入IP地址可以找出主机名。用法如下：
+	
+	nslookup domain [dns-server]
+	
+如果没有指定dns-server，将会使用系统默认的服务器。
 
-<a href='http://imwuyu.me/talk-about/modify-mac-osx-terminal-prompt-and-color.html/'>《给 Terminal 施点魔法》</a>
+例如输入：
+
+	nslookup www.baidu.com
+	
+返回的信息是：
+
+	Server:		8.8.8.8
+	Address:	8.8.8.8#53
+	
+	Non-authoritative answer:
+	www.baidu.com	canonical name = www.a.shifen.com.
+	Name:	www.a.shifen.com
+	Address: 119.75.213.51
+	Name:	www.a.shifen.com
+	Address: 119.75.213.50
+	
+还可以指定一些其他参数，来查询更具体信息。例如：
+
+	nslookup -qt=type domain [dns-server]
+	
+	nslookup –d [其他参数] domain [dns-server]
+	
+	
+### kill
+kill命令用来终止一个进程。用法为：
+
+	kill [－s signal | －p] [－a] pid ...
+	kill －l [signal]
+	
+其中`－s`指定发送的信号，`－p`模拟发送信号，`－l`：指定信号的名称列表，`pid`要中止进程的ID号，`signal`表示信号。
+
+例如：
+
+	kill 1105
+	
+将会终止PID为1105的进程。
+
+### ping
+ping命令用来检测主机网络接口状态，使用方法如下：
+
+	ping [-dfnqrRv][-c][-i][-I][-l][-p][-s][-t] IP地址
+	
+`-d`：使用Socket的SO_DEBUG功能。
+`-c`：设置完成要求回应的次数。
+`-f`：极限检测。
+`-i`：指定收发信息的间隔秒数。
+`-I`：网络界面使用指定的网络界面送出数据包。
+`-l`：前置载入，设置在送出要求信息之前，先行发出的数据包。
+`-n`：只输出数值。
+`-p`：设置填满数据包的范本样式。
+`-q`：不显示指令执行过程，开头和结尾的相关信息除外。
+`-r`：忽略普通的Routing Table，直接将数据包送到远端主机上。
+`-R`：记录路由过程。
+`-s`：设置数据包的大小。
+`-t`：设置存活数值TTL的大小。
+`-v`：详细显示指令的执行过程。
+	
+### shutdown
+shutdown命令可用来设置mac的定时关机、重启、睡眠。用法如下：
+
+	shutdown [-h | -r | -s] time
+
+其中，h/r/s分别代表关机/重启/睡眠，time表示时间。如果要立即执行，可将time设置为now。如果，要取消的话，使用kill命令即可。
+
+## 参考文章
+
+[《Mac OS X Terminal 101：终端使用初级教程》](https://www.renfei.org/blog/mac-os-x-terminal-101.html)
+
+[《给 Terminal 施点魔法》](http://imwuyu.me/talk-about/modify-mac-osx-terminal-prompt-and-color.html)
+
+[《常用cmd命令——nslookup命令》](http://www.cnblogs.com/earl86/archive/2009/02/06/1666439.html)
