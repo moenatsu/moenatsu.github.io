@@ -5,7 +5,7 @@
     * Author:         BeiYuu
     -->
     <meta charset="utf-8" />
-    <title>城市选择器 | NatsuZone.com</title>
+    <title>CocoaHTTPServer的简单实用 | NatsuZone.com</title>
     <meta name="author" content="Natsu" />
     <meta name="renderer" content="webkit">
     <meta name="description" content="Natsu's Blog" />
@@ -42,19 +42,108 @@
 
 <div id="content">
     <div class="entry">
-        <h1 class="entry-title"><a href="/city-pickview" title="城市选择器">城市选择器</a></h1>
-        <p class="entry-date">2016-06-16</p>
-        <p>一个简单的城市选择器，使用coredata来进行数据的存储与查询。</p>
+        <h1 class="entry-title"><a href="/cocoahttpserver" title="CocoaHTTPServer的简单实用">CocoaHTTPServer的简单实用</a></h1>
+        <p class="entry-date">2016-07-06</p>
+        <h2 id="section">简介</h2>
+<p><a href="https://github.com/robbiehanson/CocoaHTTPServer">CocoaHTTPServer</a>是Mac OS X和iOS平台上一个轻量级、可嵌入的HTTP服务器框架。它是一个开源的项目，支持异步socket、ipv4、ipv6以及SSL/TLS加密。</p>
 
-<p><img src="/images/city_pickview/city-pickview.png" alt="city-pickview" /></p>
+<p>使用CocoaHTTPServer框架，可以在iOS设备上建立一个本地服务器，当电脑和移动设备处于同一局域网时，就可以通过电脑访问iOS的服务器页面，并能够实现文件之间的传输。</p>
 
-<p><a href="https://github.com/moenatsu/city-pickview">demo源码</a></p>
+<h2 id="section-1">使用</h2>
+<p>可使用cocoapods快速集成CocoaHTTPServer到项目中。</p>
+
+<pre><code>pod 'CocoaHTTPServer'
+</code></pre>
+
+<p>也可以手动导入，手动导入步骤如下：</p>
+
+<p>1.下载<a href="https://github.com/robbiehanson/CocoaHTTPServer">CocoaHTTPServer</a></p>
+
+<p>2.将CocoaHTTPServer-master目录下的Core导入工程。</p>
+
+<p>3.打开Vendor，将其中的CocoaAsyncSocket、CocoaLumberjack文件夹导入。</p>
+
+<p>开启服务器的代码如下：</p>
+
+<pre><code>- (void)openHttpServer {
+    self.httpServer = [[HTTPServer alloc] init];
+    [self.httpServer setType:@"_http._tcp."];  // 设置服务类型
+//    [self.httpServer setPort:12345]; // 设置服务器端口
+    NSString *webPath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"Web"];
+    
+    NSLog(@"-------------\nSetting document root: %@\n", webPath);
+    // 设置服务器路径
+    [self.httpServer setDocumentRoot:webPath];
+    NSError *error;
+    if(![self.httpServer start:&amp;error])
+    {
+        NSLog(@"-------------\nError starting HTTP Server: %@\n", error);
+    }
+    else {
+        NSLog(@"port %hu",[self.httpServer listeningPort]);
+        
+    }
+}
+</code></pre>
+
+<p>获取设备的ip地址的方法如下：</p>
+
+<pre><code>+ (NSString *)deviceIPAdress {
+    NSString *address = @"an error occurred when obtaining ip address";
+    struct ifaddrs *interfaces = NULL;
+    struct ifaddrs *temp_addr = NULL;
+    int success = 0;
+    
+    success = getifaddrs(&amp;interfaces);
+    
+    if (success == 0) { // 0 表示获取成功
+        
+        temp_addr = interfaces;
+        while (temp_addr != NULL) {
+            if( temp_addr-&gt;ifa_addr-&gt;sa_family == AF_INET) {
+                // Check if interface is en0 which is the wifi connection on the iPhone
+                if ([[NSString stringWithUTF8String:temp_addr-&gt;ifa_name] isEqualToString:@"en0"]) {
+                    // Get NSString from C String
+                    address = [NSString stringWithUTF8String:inet_ntoa(((struct sockaddr_in *)temp_addr-&gt;ifa_addr)-&gt;sin_addr)];
+                }
+            }
+            
+            temp_addr = temp_addr-&gt;ifa_next;
+        }
+    }
+    
+    freeifaddrs(interfaces);
+    return address;
+}
+</code></pre>
+
+<p>运行程序后，同一局域网的设备即可通过ip:port访问该设备的指定文件。</p>
+
+<p>如果想要通过其他设备传输文件到本设备上，可参考如下操作：</p>
+
+<p>1.打开Samples/SimpleFileUploadServer文件夹，将其中的MyHTTPConnection类文件、Web文件夹导入工程。</p>
+
+<p>2.在MyHTTPConnection.m的<code>- (void) processStartOfPartWithHeader:(MultipartMessageHeader*) header</code>方法中，将<code>uploadDirPath</code>改为你想要在iOS设备中存放接收的文件的位置即可。</p>
+
+<p>3.在之前的<code>- (void)openHttpServer</code>方法中添加如下代码：</p>
+
+<pre><code>[self.httpServer setConnectionClass:[MyHTTPConnection class]];
+</code></pre>
+
+<p>运行程序，同一局域网的设备访问ip:port将会看到如下界面：</p>
+
+<p><img src="/images/cocoahttpserver/uploadfile.png" alt="uploadfile" /></p>
+
+<p>选取文件点击<code>submit</code>之后，就可以将文件传输到上面<code>uploadDirPath</code>指定的路径下面。</p>
+
+<p>该页面显示的就是Web文件夹下的index.html，可根据需要自行更改。</p>
+
 
         <br/>
         <br/>
         <hr/>
         <!-- 多说评论框 start -->
-        <div class="ds-thread" data-thread-key="/city-pickview" data-title="城市选择器" data-url="/city-pickview"></div>
+        <div class="ds-thread" data-thread-key="/cocoahttpserver" data-title="CocoaHTTPServer的简单实用" data-url="/cocoahttpserver"></div>
         <!-- 多说评论框 end -->
         <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
         <script type="text/javascript">
