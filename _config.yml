@@ -7,9 +7,9 @@ permalink: /:title
 highlighter: rouge
 
 title: NatsuZone.com
-url: http://www.natsuzone.com
+url: http://moenatsu.github.io/
 feed: /atom.xml
-author_info: <a href="http://www.natsuzone.com/">Natsu</a>
+author_info: <a href="http://moenatsu.github.io/">Natsu</a>
 
 comments :
 provider : duoshuo
