@@ -222,6 +222,15 @@ shutdown命令可用来设置mac的定时关机、重启、睡眠。用法如下
 
 其中，h/r/s分别代表关机/重启/睡眠，time表示时间。如果要立即执行，可将time设置为now。如果，要取消的话，使用kill命令即可。
 
+### mdfind
+mdfind命令可使用Spotlight搜索服务来搜索关键字，它会返回所有匹配关键字的文件路径。用法如下：
+
+	mdfind image  #查找包含image关键字的文件
+	mdfind -onlyin ~ image	#查找~目录下，包含image关键字的文件
+	mdfind -name stdlib.h	#查找名为stdlib.h的文件
+	mdfind -live MyFavoriteAuthor	#持续查找MyFavoriteAuthor文件
+
+
 ## 参考文章
 
 [《Mac OS X Terminal 101：终端使用初级教程》](https://www.renfei.org/blog/mac-os-x-terminal-101.html)
