@@ -3,7 +3,7 @@
 layout: post
 title: CocoaHTTPServer的简单实用
 description: CocoaHTTPServer是Mac OS X和iOS平台上一个轻量级、可嵌入的HTTP服务器框架。它是一个开源的项目，支持异步socket、ipv4、ipv6以及SSL/TLS加密
-category: iOS
+tag: iOS
 
 ---
 

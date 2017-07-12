@@ -3,7 +3,7 @@
 layout: post
 title: python网络数据采集
 description: python网络数据采集的学习笔记
-category: python
+tag: python
 
 ---
 
