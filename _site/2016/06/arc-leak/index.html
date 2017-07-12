@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <title>在ARC下调用performSelector方法导致的内存泄露问题</title>
+  <meta name="description" content="当我们使用performSelector方法的时候，如：">
+  <meta name="author" content="leopardpan">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="在ARC下调用performSelector方法导致的内存泄露问题">
+  <meta name="twitter:description" content="当我们使用performSelector方法的时候，如：">
+  
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="在ARC下调用performSelector方法导致的内存泄露问题">
+  <meta property="og:description" content="当我们使用performSelector方法的时候，如：">
+  
+  <link rel="icon" type="image/png" href="/images/favicon.png" />
+  <link href="/images/favicon.png" rel="shortcut icon" type="image/png">
+  
+  <link rel="stylesheet" href="/css/main.css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link rel="canonical" href="https://moenatsu.github.io/2016/06/arc-leak/">
+  <link rel="alternate" type="application/rss+xml" title="Natsu" href="https://moenatsu.github.io/feed.xml">
+  
+  <meta name="google-site-verification" content="1-1ZlHoRvM0T2FqPbW2S-qLgYXN6rsn52kErlMPd_gw" />
+
+<!-- 站点统计 -->
+<!--  <script -->
+<!--  async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">-->
+<!--  </script>  -->
+
+<!-- 百度统计 -->
+  
+
+<!-- google 统计 -->
+  
+
+</head>
+
+
+  <body>
+
+    <span class="mobile btn-mobile-menu">        
+      <div class="nav_container">
+         <nav class="nav-menu-item" style = "float:right">
+            <i class="nav-menu-item">
+              <a href="/#blog" title="" class="blog-button">  博客主页
+              </a>
+            </i>
+            
+                <i class="nav-menu-item">
+
+                  <a href="/archive" title="archive" class="btn-mobile-menu__icon">
+                      所有文章
+                  </a>
+                </i>
+            
+                <i class="nav-menu-item">
+
+                  <a href="/tags" title="tags" class="btn-mobile-menu__icon">
+                      标签
+                  </a>
+                </i>
+            
+                <i class="nav-menu-item">
+
+                  <a href="/about" title="about" class="btn-mobile-menu__icon">
+                      关于我
+                  </a>
+                </i>
+            
+          </nav>
+      </div>
+    </span>
+    
+    <header class="panel-cover panel-cover--collapsed" style="background-image">
+  <div class="panel-main">
+
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+        <!-- 头像效果-start -->
+        <div class="ih-item circle effect right_to_left">            
+            <a href="/#blog" title="前往 Natsu 的主页" class="blog-button">
+                <div class="img"><img src="/images/avatar.jpg" alt="img"></div>
+                <div class="info">
+                    <div class="info-back">
+                        <h2> 
+                            
+                                Natsu
+                            
+                        </h2>
+                        <p>
+                           
+                                码农 | 死宅
+                            
+                        </p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <!-- 头像效果-end -->
+        <h1 class="panel-cover__title panel-title"><a href="/#blog" title="link to homepage for Natsu" class="blog-button">Natsu</a></h1>
+        
+        <span class="panel-cover__subtitle panel-subtitle">个人站</span>
+        
+        <hr class="panel-cover__divider" />
+        <p class="panel-cover__description">欢迎来到我的个人站~</p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary" />
+        
+        
+        
+
+        <div class="navigation-wrapper">
+          <div>
+            <nav class="cover-navigation cover-navigation--primary">
+              <ul class="navigation">
+                <li class="navigation__item"><a href="/#blog" title="" class="blog-button">博客主页</a></li>
+                
+                  <li class="navigation__item"><a href="/archive" title="archive">所有文章</a></li>
+                
+                  <li class="navigation__item"><a href="/tags" title="tags">标签</a></li>
+                
+                  <li class="navigation__item"><a href="/about" title="about">关于我</a></li>
+                
+              </ul>
+            </nav>
+          </div>          
+        </div>
+
+
+        </div>
+      </div>
+    </div>
+    
+    
+    <div class="panel-cover--overlay cover-clear"></div>
+    
+  </div>
+</header>
+
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner">
+            <article class="post-container post-container--single" itemscope itemtype="http://schema.org/BlogPosting">
+  <header class="post-header">
+    <h1 class="post-title">在ARC下调用performSelector方法导致的内存泄露问题</h1>
+    <div class="post-meta">
+      <img src="/images/calendar.png" width="20px"/> 
+      <time datetime="2016-06-07 00:00:00 +0800" itemprop="datePublished" class="post-meta__date date">2016-06-07</time>  
+         
+      <span id="busuanzi_container_page_pv"> | 阅读：<span id="busuanzi_value_page_pv"></span>次</span>
+    </p>
+    </div>
+  </header>
+
+  <section class="post">
+    <p>当我们使用<code class="highlighter-rouge">performSelector</code>方法的时候，如：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>[object performSelector:@selector(someMethod)];
+
+[object performSelector:NSSelectorFromString(@"someMethod")];
+</code></pre>
+</div>
+
+<p>在ARC情况下，可能会导致编译器报如下警告：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>"performSelector may cause a leak because its selector is unknown".
+</code></pre>
+</div>
+
+<h3 id="section">原因</h3>
+<p>由于这段代码是动态的调用<code class="highlighter-rouge">someMethod</code>方法，编译器并不了解这个方法的返回值，因此编译器也无法用ARC的内存管理机制来进行管理。ARC对此的做法就是不添加释放操作，因此当调用的方法会使调用对象引用计数增加时，将会导致内存泄露。</p>
+
+<h3 id="section-1">解决方法</h3>
+
+<h4 id="c">1.利用C函数指针方法调用函数</h4>
+<p>你可以将上面的方法调用改写成如下方式：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>if (!object) { return; }
+SEL selector = NSSelectorFromString(@"someMethod");
+IMP imp = [object methodForSelector:selector];
+void (*func)(id, SEL) = (void *)imp;
+func(object, selector);
+</code></pre>
+</div>
+
+<p>或者，你可以写的更简单一点：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>SEL selector = NSSelectorFromString(@"someMethod");
+((void (*)(id, SEL))[object methodForSelector:selector])(object, selector);
+</code></pre>
+</div>
+
+<p>如果方法有返回值或者需要传入参数的话，你需要做一些改变，例如：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>SEL selector = NSSelectorFromString(@"processRegion:ofView:");
+IMP imp = [object methodForSelector:selector];
+CGRect (*func)(id, SEL, CGRect, UIView *) = (void *)imp;
+CGRect result = object ? func(object, selector, someRect, someView) : CGRectZero;
+</code></pre>
+</div>
+
+<h4 id="section-2">2.让编译器忽略这些警告</h4>
+<p>通过使用<code class="highlighter-rouge">clang diagnostic ignored</code>来使编译器忽略指定的警告，如果你有多处报这个警告的话，你可以定义如下的宏来使代码更简洁。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>#define SuppressPerformSelectorLeakWarning(Stuff) \
+do { \
+    _Pragma("clang diagnostic push") \
+    _Pragma("clang diagnostic ignored \"-Warc-performSelector-leaks\"") \
+    Stuff; \
+    _Pragma("clang diagnostic pop") \
+} while (0)
+</code></pre>
+</div>
+
+<p>在使用时，你只需要这样做：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>SuppressPerformSelectorLeakWarning(
+    [_target performSelector:_action withObject:self]
+);
+</code></pre>
+</div>
+
+<p>如果你需要方法的返回值的话，你可以这样做：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>id result;
+SuppressPerformSelectorLeakWarning(
+	result = [_target performSelector:_action withObject:self]
+);
+</code></pre>
+</div>
+
+<h3 id="section-3">总结</h3>
+<p>当你无法确定调用的方法是否会造成内存泄露时，最好不要这样做。例如当你在调用类似<code class="highlighter-rouge">initSomething</code>、<code class="highlighter-rouge">newSomething</code>、<code class="highlighter-rouge">somethingCopy</code>等会使引用计数增加方法时，是可能会导致内存泄露。例如，如下的调用回导致内存泄漏：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>NSArray *array = @[@"a",@"b"];
+[array performSelector:NSSelectorFromString(@"copy")];
+</code></pre>
+</div>
+
+<p>在Xcode7.3版本中，使用如下写法：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>NSArray *array = @[@"a",@"b"];
+[array performSelector:@selector(copy)];
+</code></pre>
+</div>
+
+<p>此时编译器会直接报错：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>PerformSelector names a selector which retains the object
+</code></pre>
+</div>
+
+<p>这时无论使用上述哪种方法都无法解决内存泄漏。在MRC模式下，加上<code class="highlighter-rouge">array = nil;</code>是可以解决内存泄漏的，但是在ARC模式下不行。在网上也看了好多资料，试了多种方法，但这个问题还是没有解决。所以，在ARC模式下，尽量不要使用<code class="highlighter-rouge">performSelector</code>方法来调用<code class="highlighter-rouge">initSomething</code>、<code class="highlighter-rouge">newSomething</code>、<code class="highlighter-rouge">somethingCopy</code>等会使引用计数增加方法。最后，如果你有什么更好的建议，请在评论区留言。</p>
+
+<p>参考资料：<a href="http://stackoverflow.com/questions/7017281/performselector-may-cause-a-leak-because-its-selector-is-unknown">http://stackoverflow.com/questions/7017281/performselector-may-cause-a-leak-because-its-selector-is-unknown</a></p>
+
+
+  </section>
+</article>
+
+<section>
+
+<!--            <div class="content-play">-->
+<!--              <p><a href="javascript:void(0)" onclick="dashangToggle()" class="dashang" title="打赏，支持一下">打赏一个呗</a></p>-->
+<!--              <div class="hide_box-play"></div>-->
+<!--              <div class="shang_box-play">-->
+<!--                <a class="shang_close-play" href="javascript:void(0)" onclick="dashangToggle()" title="关闭"><img src="/images/payimg/close.jpg" alt="取消" /></a>-->
+<!--                <div class="shang_tit-play">-->
+<!--                  <p>感谢您的支持，我会继续努力的!</p>-->
+<!--                </div>-->
+<!--                <div class="shang_payimg">-->
+<!--                    <img src="/images/payimg/alipayimg.jpg" alt="扫码支持" title="扫一扫" />-->
+<!--                </div>-->
+<!--              <div class="shang_payimg">    -->
+<!--                    <img src="/images/payimg/weipayimg.jpg" alt="扫码支持" title="扫一扫" />-->
+<!--                </div>-->
+<!--                <div class="pay_explain">扫码打赏，你说多少就多少</div>-->
+<!--                <div class="shang_payselect">-->
+<!--                  <div class="pay_item checked" data-id="alipay">-->
+<!--                    <span class="pay_logo"><img src="/images/payimg/alipay.jpg" alt="支付宝" /></span>-->
+<!--                  </div>-->
+<!--                  <div class="pay_item" data-id="weipay">-->
+<!--                    <span class="pay_logo"><img src="/images/payimg/wechat.jpg" alt="微信" /></span>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--                <div class="shang_info-play">-->
+<!--                  <p>打开<span id="shang_pay_txt">支付宝</span>扫一扫，即可进行扫码打赏哦</p>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--            <script type="text/javascript">-->
+<!--            function dashangToggle(){-->
+<!--              $(".hide_box-play").fadeToggle();-->
+<!--              $(".shang_box-play").fadeToggle();-->
+<!--            }-->
+<!--            </script>-->
+
+            <div style="text-align:center;margin:50px 0; font:normal 14px/24px 'MicroSoft YaHei';"></div>
+
+            <style type="text/css">
+              .content-play{width:80%;margin-top: 20px;margin-bottom: 10px;height:40px;}
+              .hide_box-play{z-index:999;filter:alpha(opacity=50);background:#666;opacity: 0.5;-moz-opacity: 0.5;left:0;top:0;height:99%;width:100%;position:fixed;display:none;}
+              .shang_box-play{width:540px;height:540px;padding:10px;background-color:#fff;border-radius:10px;position:fixed;z-index:1000;left:50%;top:50%;margin-left:-280px;margin-top:-280px;border:1px dotted #dedede;display:none;}
+              .shang_box-play img{border:none;border-width:0;}
+              .dashang{display:block;width:100px;margin:5px auto;height:25px;line-height:25px;padding:10px;background-color:#E74851;color:#fff;text-align:center;text-decoration:none;border-radius:10px;font-weight:bold;font-size:16px;transition: all 0.3s;}
+              .dashang:hover{opacity:0.8;padding:15px;font-size:18px;}
+              .shang_close-play{float:right;display:inline-block;
+                margin-right: 10px;margin-top: 20px;
+              }
+              .shang_logo{display:block;text-align:center;margin:20px auto;}
+              .shang_tit-play{width: 100%;height: 75px;text-align: center;line-height: 66px;color: #a3a3a3;font-size: 16px;background: url('/images/payimg/cy-reward-title-bg.jpg');font-family: 'Microsoft YaHei';margin-top: 7px;margin-right:2px;}
+              .shang_tit-play p{color:#a3a3a3;text-align:center;font-size:16px;}
+              .shang_payimg{width:140px;padding:10px;padding-left: 80px; /*border:6px solid #EA5F00;**/margin:0 auto;border-radius:3px;height:140px;display:inline-block;}
+              .shang_payimg img{display:inline-block;margin-right:10px;float:left;text-align:center;width:140px;height:140px; }
+              .pay_explain{text-align:center;margin:10px auto;font-size:12px;color:#545454;}
+              .shang_payselect{text-align:center;margin:0 auto;margin-top:40px;cursor:pointer;height:60px;width:500px;margin-left:110px;}
+              .shang_payselect .pay_item{display:inline-block;margin-right:140px;float:left;}
+              .shang_info-play{clear:both;}
+              .shang_info-play p,.shang_info-play a{color:#C3C3C3;text-align:center;font-size:12px;text-decoration:none;line-height:2em;}
+            </style>
+
+       <ul class="pager">
+        
+        <li class="previous">
+            <a href="/2016/05/apache-php-mysql/" data-toggle="tooltip" data-placement="top" title="在OSX 10.11 EI Capitan中运行Apache，MySQL，PHP和phpMyAdmin">上一篇：  <span>在OSX 10.11 EI Capitan中运行Apache，MySQL，PHP和phpMyAdmin</span>
+            </a>
+        </li>
+        
+        
+        <li class="next">
+            <a href="/2016/07/cocoahttpserver/" data-toggle="tooltip" data-placement="top" title="CocoaHTTPServer的简单实用">下一篇：  <span>CocoaHTTPServer的简单实用</span>
+            </a>
+        </li>
+        
+    </ul>
+</section>
+
+<!--<section class="post-comments">
+
+
+    <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    <script src="https://img1.cache.netease.com/f2e/tie/yun/sdk/loader.js"></script>
+    <script>
+    var cloudTieConfig = {
+      url: document.location.href, 
+      sourceId: "",
+      productKey: "aa395cf7778f458492060f3f53301b7c",
+      target: "cloud-tie-wrapper"
+    };
+    var yunManualLoad = true;
+    Tie.loader("aHR0cHM6Ly9hcGkuZ2VudGllLjE2My5jb20vcGMvbGl2ZXNjcmlwdC5odG1s", true);
+    </script>
+
+
+  
+</section>
+-->
+
+            <section class="footer">
+    <footer>
+        <div class = "footer_div">  
+        <nav class="cover-navigation navigation--social">
+          <ul class="navigation">
+
+          
+          <!-- Weibo -->
+          <li class="navigation__item_social">
+            <a href="http://weibo.com/1720433822" title="@1720433822 的微博" target="_blank">
+              <i class='social fa fa-weibo fa-2x'></i>
+              <span class="label">Weibo</span>
+            </a>
+          </li>
+          
+
+          
+          <!-- Github -->
+          <li class="navigation__item_social">
+            <a href="https://github.com/moenatsu" title="@moenatsu 的 Github" target="_blank">
+              <i class='social fa fa-github fa-2x'></i>
+              <span class="label">Github</span>
+            </a>
+          </li>
+          
+          
+          
+
+          
+
+          <!-- RSS -->
+          <li class="navigation__item_social">
+            <a href="/feed.xml" rel="author" title="RSS" target="_blank">
+              <i class='social fa fa-rss fa-2x'></i>
+              <span class="label">RSS</span>
+            </a>
+          </li>
+
+          
+          <!-- Email -->
+          <li class="navigation__item_social">
+            <a href="mailto:natsu.mdn@foxmail.com" title="Contact me">
+              <i class='social fa fa-envelope fa-2x'></i>
+              <span class="label">Email</span>
+            </a>
+          </li>
+          
+
+          </ul>
+        </nav>
+
+        </div>
+
+        <div class = "footer_div">  
+           <p class="copyright text-muted">
+            Copyright &copy; Natsu 2017 Theme by <a href="http://baixin.io/">leopardpan</a> |
+            <iframe
+                style="margin-left: 2px; margin-bottom:-5px;"
+                frameborder="0" scrolling="0" width="91px" height="20px"
+                src="https://ghbtns.com/github-btn.html?user=leopardpan&repo=leopardpan.github.io&type=star&count=true" >
+            </iframe>
+            </p>
+        	<div align="right">
+    			<link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+          <!-- 访问统计 -->
+<!--          <span id="busuanzi_container_site_pv">-->
+<!--            本站总访问量-->
+<!--            <span id="busuanzi_value_site_pv"></span>次-->
+<!--          </span>-->
+
+        </div>
+        <div>
+    </footer>
+</section>
+
+        </div>
+    </div>
+    
+    <script type="text/javascript" src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="/js/main.js"></script>
+
+<script type="text/javascript" src="/js/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+  </body>
+
+</html>

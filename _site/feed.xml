@@ -1,0 +1,1140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Natsu</title>
+    <description>欢迎来到我的个人站~</description>
+    <link>https://moenatsu.github.io/</link>
+    <atom:link href="https://moenatsu.github.io/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Wed, 12 Jul 2017 13:50:08 +0800</pubDate>
+    <lastBuildDate>Wed, 12 Jul 2017 13:50:08 +0800</lastBuildDate>
+    <generator>Jekyll v3.1.1</generator>
+    
+      <item>
+        <title>python网络数据采集</title>
+        <description>&lt;h2 id=&quot;section&quot;&gt;准备工作&lt;/h2&gt;
+&lt;p&gt;安装BeautifulSoup&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ pip3 install beautifulsoup4
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;运行BeautifulSoup&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;from urllib.request import urlopen
+from bs4 import BeautifulSoup
+html = urlopen(&quot;http://www.pythonscraping.com/pages/page1.html&quot;) 
+bsObj = BeautifulSoup(html.read(), &quot;html.parser&quot;)
+print(bsObj.h1)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;用虚拟环境保存库文件:&lt;/p&gt;
+
+&lt;p&gt;当一个 Python 库不用虚拟环境安装的时候，你实际上是全局安装它。这通常需要有管理员权限，或者以root身份安装，这个库文件对设备上的每个用户和每个项目都是存在的。这时可以选择用虚拟环境。&lt;/p&gt;
+
+&lt;p&gt;首先安装virtualenv：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ pip install virtualenv
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;创建虚拟环境：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ virtualenv scrapingEnv		#创建一个叫作 scrapingEnv 的新环境
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;激活环境：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ cd scrapingEnv/
+$ source bin/activate
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;退出环境：&lt;/p&gt;
+
+ 	$ deactivate
+
+&lt;h2 id=&quot;section-1&quot;&gt;正则表达式&lt;/h2&gt;
+
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;th&gt;符号&lt;/th&gt;
+		&lt;th&gt;含义&lt;/th&gt;
+		&lt;th&gt;例子&lt;/th&gt;
+		&lt;th&gt;匹配结果&lt;/th&gt;
+	&lt;/tr&gt;
+	&lt;tr&gt;
+		&lt;td&gt;*&lt;/td&gt;
+		&lt;td&gt;匹配前面的字符、子表达式或括号里的字符0次或多次&lt;/td&gt;
+		&lt;td&gt;a*b*&lt;/td&gt;
+		&lt;td&gt;aaaaaaaa，aaabbbbb， bbbbbb&lt;/td&gt;
+	&lt;/tr&gt;
+	&lt;tr&gt;
+		&lt;td&gt;+&lt;/td&gt;
+		&lt;td&gt;匹配前面的字符、子表达式或括号里的字符至少1次&lt;/td&gt;
+		&lt;td&gt;a+b+&lt;/td&gt;
+		&lt;td&gt;aaaaaaab，aaabbbbb， abbbbbb&lt;/td&gt;
+	&lt;/tr&gt;
+	&lt;tr&gt;
+		&lt;td&gt;[]&lt;/td&gt;
+		&lt;td&gt;匹配任意一个字符(相当于“任选一个”)&lt;/td&gt;
+		&lt;td&gt;[A-Z]*&lt;/td&gt;
+		&lt;td&gt;APPLE，CAPIT ALS， QWERTY&lt;/td&gt;
+	&lt;/tr&gt;
+	&lt;tr&gt;
+		&lt;td&gt;()&lt;/td&gt;
+		&lt;td&gt;表达式编组(在正则表达式的规则里编组会优先运行)&lt;/td&gt;
+		&lt;td&gt;(a*b)*&lt;/td&gt;
+		&lt;td&gt;aaabaab，abaaab， ababaaaaab&lt;/td&gt;
+	&lt;/tr&gt;
+	&lt;tr&gt;
+		&lt;td&gt;{m,n}&lt;/td&gt;
+		&lt;td&gt;匹配前面的字符、子表达式或括号里的字符 m 到 n次(包含m或n)&lt;/td&gt;
+		&lt;td&gt;a{2,3}b{2,3}&lt;/td&gt;
+		&lt;td&gt;aabbb，aaabbb，aabb&lt;/td&gt;
+	&lt;/tr&gt;
+	&lt;tr&gt;
+		&lt;td&gt;[^]&lt;/td&gt;
+		&lt;td&gt;匹配任意一个不在中括号里的字符&lt;/td&gt;
+		&lt;td&gt;[^A-Z]*&lt;/td&gt;
+		&lt;td&gt;apple，lowercase， qwerty&lt;/td&gt;
+	&lt;/tr&gt;
+	&lt;tr&gt;
+		&lt;td&gt;|&lt;/td&gt;
+		&lt;td&gt;匹配任意一个由竖线分割的字符、子表达式(注 意是竖线，不是大字字母 I)&lt;/td&gt;
+		&lt;td&gt;b(a|i|e)d&lt;/td&gt;
+		&lt;td&gt;bad，bid，bed&lt;/td&gt;
+	&lt;/tr&gt;
+	&lt;tr&gt;
+		&lt;td&gt;.&lt;/td&gt;
+		&lt;td&gt;匹配任意单个字符(包括符号、数字和空格等)&lt;/td&gt;
+		&lt;td&gt;b.d&lt;/td&gt;
+		&lt;td&gt;bad，bzd，b$d，b d&lt;/td&gt;
+	&lt;/tr&gt;
+	&lt;tr&gt;
+		&lt;td&gt;^&lt;/td&gt;
+		&lt;td&gt;指字符串开始位置的字符或子表达式&lt;/td&gt;
+		&lt;td&gt;^a&lt;/td&gt;
+		&lt;td&gt;apple，asdf，a&lt;/td&gt;
+	&lt;/tr&gt;
+	&lt;tr&gt;
+		&lt;td&gt;\&lt;/td&gt;
+		&lt;td&gt;转义字符(把有特殊含义的字符转换成字面形式)&lt;/td&gt;
+		&lt;td&gt;\.\ | \\&lt;/td&gt;
+		&lt;td&gt;.| \&lt;/td&gt;
+	&lt;/tr&gt;
+	&lt;tr&gt;
+		&lt;td&gt;$&lt;/td&gt;
+		&lt;td&gt;经常用在正则表达式的末尾，表示“从字符串的
+末端匹配”。如果不用它，每个正则表达式实际都 带着“.*”模式，只会从字符串开头进行匹配。这 个符号可以看成是 ^ 符号的反义词&lt;/td&gt;
+		&lt;td&gt;[A-Z]*[a-z]*$&lt;/td&gt;
+		&lt;td&gt;ABCabc，zzzyx，Bob&lt;/td&gt;
+	&lt;/tr&gt;
+	&lt;tr&gt;
+		&lt;td&gt;?!&lt;/td&gt;
+		&lt;td&gt;“不包含”。这个奇怪的组合通常放在字符或正则 表达式前面，表示字符不能出现在目标字符串里。 这个符号比较难用，字符通常会在字符串的不同 部位出现。如果要在整个字符串中全部排除某个 字符，就加上^和$符号&lt;/td&gt;
+		&lt;td&gt;^((?![A-Z]).)*$&lt;/td&gt;
+		&lt;td&gt;no-caps-here，$ymb0ls a4e f!ne&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+
+&lt;h2 id=&quot;scrapy&quot;&gt;使用Scrapy&lt;/h2&gt;
+&lt;p&gt;安装：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ pip install Scrapy
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;创建新的Scrapy项目:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ scrapy startproject wikiSpider
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;运行：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ scrapy crawl article	#article由spiders文件中新建的aiticleSpider.py的name = &quot;article&quot; 决定
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;更多Scrapy的用法可参见这里：&lt;a href=&quot;http://doc.scrapy.org/en/latest/&quot;&gt;http://doc.scrapy.org/en/latest/&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;beautifulsoup&quot;&gt;BeautifulSoup的使用&lt;/h2&gt;
+&lt;p&gt;对于一个标签对象，可以用下面的代码获取它的全部属性:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;myTag.attrs 要注意这行代码返回的是一个 Python 字典对象，可以获取和操作这些属性。比如要获取图 片的资源位置 src，可以用下面这行代码:
+
+myImgTag.attrs[&quot;src&quot;]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Lambda表达式
+获取有两个属性的标签:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; soup.findAll(lambda tag: len(tag.attrs) == 2)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;当使用&lt;code class=&quot;highlighter-rouge&quot;&gt;urlopen&lt;/code&gt;出现如下问题时：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed 解决方法如下：
+
+import ssl
+
+# This restores the same behavior as before.
+context = ssl._create_unverified_context()
+urllib.urlopen(&quot;https://no-valid-cert&quot;, context=context)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;其他解决方法可参考&lt;a href=&quot;https://stackoverflow.com/questions/27835619/urllib-and-ssl-certificate-verify-failed-error&quot;&gt;这里&lt;/a&gt;&lt;/p&gt;
+
+</description>
+        <pubDate>Fri, 23 Jun 2017 00:00:00 +0800</pubDate>
+        <link>https://moenatsu.github.io/2017/06/python-scraping/</link>
+        <guid isPermaLink="true">https://moenatsu.github.io/2017/06/python-scraping/</guid>
+        
+        
+        <category>python</category>
+        
+      </item>
+    
+      <item>
+        <title>使用Wine在Mac系统上运行windows应用</title>
+        <description>&lt;h2 id=&quot;section&quot;&gt;简介&lt;/h2&gt;
+&lt;p&gt;&lt;a href=&quot;https://www.winehq.org&quot;&gt;Wine&lt;/a&gt; （“Wine Is Not an Emulator” 的首字母缩写）是一个能够在多种 POSIX-compliant 操作系统（诸如 Linux，macOS 及 BSD 等）上运行 Windows 应用的兼容层。 Wine 不是像虚拟机或者模拟器一样模仿内部的 Windows 逻辑，而是將 Windows API 调用翻译成为动态的 POSIX 调用，免除了性能和其他一些行为的内存占用，让你能够干净地集合 Windows 应用到你的桌面。&lt;/p&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;下载安装&lt;/h2&gt;
+&lt;p&gt;可以到&lt;a href=&quot;https://www.winehq.org&quot;&gt;Wine&lt;/a&gt;的官网下载最新的相应版本的Wine。
+下载后是一个.pkg的安装包，双击安装即可。&lt;/p&gt;
+
+&lt;h2 id=&quot;section-2&quot;&gt;使用&lt;/h2&gt;
+&lt;p&gt;安装完成之后，点开Wine的图标，会打开一个命令行窗口。要运行一个windows应用，做法如下：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;wine program.exe		#运行.exe格式的应用
+wine msiexec /i program.msi		#运行.msi格式的应用
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;如果想要配置Wine，输入如下命令：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;winecfg
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;如果想要添加或者删除程序，输入如下命令：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;wine uninstaller
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Wine所安装的应用可以在&lt;code class=&quot;highlighter-rouge&quot;&gt;~/.wine/drive_c&lt;/code&gt;目录下找到。&lt;/p&gt;
+
+&lt;h2 id=&quot;section-3&quot;&gt;卸载&lt;/h2&gt;
+&lt;p&gt;卸载Wine的方式如下：
+使用&lt;code class=&quot;highlighter-rouge&quot;&gt;Homebrew&lt;/code&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;brew rm wine &amp;amp;&amp;amp; brew rm $(join &amp;lt;(brew leaves) &amp;lt;(brew deps wine))
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;使用&lt;code class=&quot;highlighter-rouge&quot;&gt;MacPorts&lt;/code&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sudo port uninstall --follow-dependencies wine
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;如果安装了开发版本，用wine-devel替代wine。
+使用&lt;code class=&quot;highlighter-rouge&quot;&gt;Fink&lt;/code&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;fink remove wine
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;如果安装了开发版本，请将wine替换为wine-dev。
+如果用的是&lt;code class=&quot;highlighter-rouge&quot;&gt;sudo make install&lt;/code&gt;，输入：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sudo make uninstall
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;之后，删除本地的Wine的目录&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;rm -rf src/wine
+rm -rf $HOME/.wine
+rm -rf $HOME/.local
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;更多关于Wine的内容，可以在官网找到：&lt;a href=&quot;https://www.winehq.org&quot;&gt;https://www.winehq.org&lt;/a&gt;&lt;/p&gt;
+</description>
+        <pubDate>Thu, 18 May 2017 00:00:00 +0800</pubDate>
+        <link>https://moenatsu.github.io/2017/05/mac-wine/</link>
+        <guid isPermaLink="true">https://moenatsu.github.io/2017/05/mac-wine/</guid>
+        
+        
+        <category>Mac</category>
+        
+      </item>
+    
+      <item>
+        <title>CocoaHTTPServer的简单实用</title>
+        <description>&lt;h2 id=&quot;section&quot;&gt;简介&lt;/h2&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/robbiehanson/CocoaHTTPServer&quot;&gt;CocoaHTTPServer&lt;/a&gt;是Mac OS X和iOS平台上一个轻量级、可嵌入的HTTP服务器框架。它是一个开源的项目，支持异步socket、ipv4、ipv6以及SSL/TLS加密。&lt;/p&gt;
+
+&lt;p&gt;使用CocoaHTTPServer框架，可以在iOS设备上建立一个本地服务器，当电脑和移动设备处于同一局域网时，就可以通过电脑访问iOS的服务器页面，并能够实现文件之间的传输。&lt;/p&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;使用&lt;/h2&gt;
+&lt;p&gt;可使用cocoapods快速集成CocoaHTTPServer到项目中。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;pod &#39;CocoaHTTPServer&#39;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;也可以手动导入，手动导入步骤如下：&lt;/p&gt;
+
+&lt;p&gt;1.下载&lt;a href=&quot;https://github.com/robbiehanson/CocoaHTTPServer&quot;&gt;CocoaHTTPServer&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;2.将CocoaHTTPServer-master目录下的Core导入工程。&lt;/p&gt;
+
+&lt;p&gt;3.打开Vendor，将其中的CocoaAsyncSocket、CocoaLumberjack文件夹导入。&lt;/p&gt;
+
+&lt;p&gt;开启服务器的代码如下：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;- (void)openHttpServer {
+    self.httpServer = [[HTTPServer alloc] init];
+    [self.httpServer setType:@&quot;_http._tcp.&quot;];  // 设置服务类型
+//    [self.httpServer setPort:12345]; // 设置服务器端口
+    NSString *webPath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@&quot;Web&quot;];
+    
+    NSLog(@&quot;-------------\nSetting document root: %@\n&quot;, webPath);
+    // 设置服务器路径
+    [self.httpServer setDocumentRoot:webPath];
+    NSError *error;
+    if(![self.httpServer start:&amp;amp;error])
+    {
+        NSLog(@&quot;-------------\nError starting HTTP Server: %@\n&quot;, error);
+    }
+    else {
+        NSLog(@&quot;port %hu&quot;,[self.httpServer listeningPort]);
+        
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;获取设备的ip地址的方法如下：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;+ (NSString *)deviceIPAdress {
+    NSString *address = @&quot;an error occurred when obtaining ip address&quot;;
+    struct ifaddrs *interfaces = NULL;
+    struct ifaddrs *temp_addr = NULL;
+    int success = 0;
+    
+    success = getifaddrs(&amp;amp;interfaces);
+    
+    if (success == 0) { // 0 表示获取成功
+        
+        temp_addr = interfaces;
+        while (temp_addr != NULL) {
+            if( temp_addr-&amp;gt;ifa_addr-&amp;gt;sa_family == AF_INET) {
+                // Check if interface is en0 which is the wifi connection on the iPhone
+                if ([[NSString stringWithUTF8String:temp_addr-&amp;gt;ifa_name] isEqualToString:@&quot;en0&quot;]) {
+                    // Get NSString from C String
+                    address = [NSString stringWithUTF8String:inet_ntoa(((struct sockaddr_in *)temp_addr-&amp;gt;ifa_addr)-&amp;gt;sin_addr)];
+                }
+            }
+            
+            temp_addr = temp_addr-&amp;gt;ifa_next;
+        }
+    }
+    
+    freeifaddrs(interfaces);
+    return address;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;运行程序后，同一局域网的设备即可通过ip:port访问该设备的指定文件。&lt;/p&gt;
+
+&lt;p&gt;如果想要通过其他设备传输文件到本设备上，可参考如下操作：&lt;/p&gt;
+
+&lt;p&gt;1.打开Samples/SimpleFileUploadServer文件夹，将其中的MyHTTPConnection类文件、Web文件夹导入工程。&lt;/p&gt;
+
+&lt;p&gt;2.在MyHTTPConnection.m的&lt;code class=&quot;highlighter-rouge&quot;&gt;- (void) processStartOfPartWithHeader:(MultipartMessageHeader*) header&lt;/code&gt;方法中，将&lt;code class=&quot;highlighter-rouge&quot;&gt;uploadDirPath&lt;/code&gt;改为你想要在iOS设备中存放接收的文件的位置即可。&lt;/p&gt;
+
+&lt;p&gt;3.在之前的&lt;code class=&quot;highlighter-rouge&quot;&gt;- (void)openHttpServer&lt;/code&gt;方法中添加如下代码：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[self.httpServer setConnectionClass:[MyHTTPConnection class]];
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;运行程序，同一局域网的设备访问ip:port将会看到如下界面：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/cocoahttpserver/uploadfile.png&quot; alt=&quot;uploadfile&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;选取文件点击&lt;code class=&quot;highlighter-rouge&quot;&gt;submit&lt;/code&gt;之后，就可以将文件传输到上面&lt;code class=&quot;highlighter-rouge&quot;&gt;uploadDirPath&lt;/code&gt;指定的路径下面。&lt;/p&gt;
+
+&lt;p&gt;该页面显示的就是Web文件夹下的index.html，可根据需要自行更改。&lt;/p&gt;
+
+</description>
+        <pubDate>Wed, 06 Jul 2016 00:00:00 +0800</pubDate>
+        <link>https://moenatsu.github.io/2016/07/cocoahttpserver/</link>
+        <guid isPermaLink="true">https://moenatsu.github.io/2016/07/cocoahttpserver/</guid>
+        
+        
+        <category>iOS</category>
+        
+      </item>
+    
+      <item>
+        <title>在ARC下调用performSelector方法导致的内存泄露问题</title>
+        <description>&lt;p&gt;当我们使用&lt;code class=&quot;highlighter-rouge&quot;&gt;performSelector&lt;/code&gt;方法的时候，如：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[object performSelector:@selector(someMethod)];
+
+[object performSelector:NSSelectorFromString(@&quot;someMethod&quot;)];
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;在ARC情况下，可能会导致编译器报如下警告：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&quot;performSelector may cause a leak because its selector is unknown&quot;.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;section&quot;&gt;原因&lt;/h3&gt;
+&lt;p&gt;由于这段代码是动态的调用&lt;code class=&quot;highlighter-rouge&quot;&gt;someMethod&lt;/code&gt;方法，编译器并不了解这个方法的返回值，因此编译器也无法用ARC的内存管理机制来进行管理。ARC对此的做法就是不添加释放操作，因此当调用的方法会使调用对象引用计数增加时，将会导致内存泄露。&lt;/p&gt;
+
+&lt;h3 id=&quot;section-1&quot;&gt;解决方法&lt;/h3&gt;
+
+&lt;h4 id=&quot;c&quot;&gt;1.利用C函数指针方法调用函数&lt;/h4&gt;
+&lt;p&gt;你可以将上面的方法调用改写成如下方式：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;if (!object) { return; }
+SEL selector = NSSelectorFromString(@&quot;someMethod&quot;);
+IMP imp = [object methodForSelector:selector];
+void (*func)(id, SEL) = (void *)imp;
+func(object, selector);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;或者，你可以写的更简单一点：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;SEL selector = NSSelectorFromString(@&quot;someMethod&quot;);
+((void (*)(id, SEL))[object methodForSelector:selector])(object, selector);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;如果方法有返回值或者需要传入参数的话，你需要做一些改变，例如：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;SEL selector = NSSelectorFromString(@&quot;processRegion:ofView:&quot;);
+IMP imp = [object methodForSelector:selector];
+CGRect (*func)(id, SEL, CGRect, UIView *) = (void *)imp;
+CGRect result = object ? func(object, selector, someRect, someView) : CGRectZero;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h4 id=&quot;section-2&quot;&gt;2.让编译器忽略这些警告&lt;/h4&gt;
+&lt;p&gt;通过使用&lt;code class=&quot;highlighter-rouge&quot;&gt;clang diagnostic ignored&lt;/code&gt;来使编译器忽略指定的警告，如果你有多处报这个警告的话，你可以定义如下的宏来使代码更简洁。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;#define SuppressPerformSelectorLeakWarning(Stuff) \
+do { \
+    _Pragma(&quot;clang diagnostic push&quot;) \
+    _Pragma(&quot;clang diagnostic ignored \&quot;-Warc-performSelector-leaks\&quot;&quot;) \
+    Stuff; \
+    _Pragma(&quot;clang diagnostic pop&quot;) \
+} while (0)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;在使用时，你只需要这样做：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;SuppressPerformSelectorLeakWarning(
+    [_target performSelector:_action withObject:self]
+);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;如果你需要方法的返回值的话，你可以这样做：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;id result;
+SuppressPerformSelectorLeakWarning(
+	result = [_target performSelector:_action withObject:self]
+);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;section-3&quot;&gt;总结&lt;/h3&gt;
+&lt;p&gt;当你无法确定调用的方法是否会造成内存泄露时，最好不要这样做。例如当你在调用类似&lt;code class=&quot;highlighter-rouge&quot;&gt;initSomething&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;newSomething&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;somethingCopy&lt;/code&gt;等会使引用计数增加方法时，是可能会导致内存泄露。例如，如下的调用回导致内存泄漏：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;NSArray *array = @[@&quot;a&quot;,@&quot;b&quot;];
+[array performSelector:NSSelectorFromString(@&quot;copy&quot;)];
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;在Xcode7.3版本中，使用如下写法：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;NSArray *array = @[@&quot;a&quot;,@&quot;b&quot;];
+[array performSelector:@selector(copy)];
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;此时编译器会直接报错：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;PerformSelector names a selector which retains the object
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;这时无论使用上述哪种方法都无法解决内存泄漏。在MRC模式下，加上&lt;code class=&quot;highlighter-rouge&quot;&gt;array = nil;&lt;/code&gt;是可以解决内存泄漏的，但是在ARC模式下不行。在网上也看了好多资料，试了多种方法，但这个问题还是没有解决。所以，在ARC模式下，尽量不要使用&lt;code class=&quot;highlighter-rouge&quot;&gt;performSelector&lt;/code&gt;方法来调用&lt;code class=&quot;highlighter-rouge&quot;&gt;initSomething&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;newSomething&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;somethingCopy&lt;/code&gt;等会使引用计数增加方法。最后，如果你有什么更好的建议，请在评论区留言。&lt;/p&gt;
+
+&lt;p&gt;参考资料：&lt;a href=&quot;http://stackoverflow.com/questions/7017281/performselector-may-cause-a-leak-because-its-selector-is-unknown&quot;&gt;http://stackoverflow.com/questions/7017281/performselector-may-cause-a-leak-because-its-selector-is-unknown&lt;/a&gt;&lt;/p&gt;
+</description>
+        <pubDate>Tue, 07 Jun 2016 00:00:00 +0800</pubDate>
+        <link>https://moenatsu.github.io/2016/06/arc-leak/</link>
+        <guid isPermaLink="true">https://moenatsu.github.io/2016/06/arc-leak/</guid>
+        
+        
+        <category>iOS</category>
+        
+      </item>
+    
+      <item>
+        <title>在OSX 10.11 EI Capitan中运行Apache，MySQL，PHP和phpMyAdmin</title>
+        <description>&lt;p&gt;在OSX 10.11 EI Capitan中，系统已经自带Apache和PHP，本文将介绍如何在OSX 10.11 EI Capitan系统中搭建Apache、PHP、MySQL以及phpMyAdmin。&lt;/p&gt;
+
+&lt;h2 id=&quot;apache&quot;&gt;Apache&lt;/h2&gt;
+&lt;p&gt;在OSX 10.11 EI Capitan中，系统已经自带Apache，我们可以用终端来管理它。&lt;/p&gt;
+
+&lt;p&gt;启动Apache：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sudo apachectl start
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;停止：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sudo apachectl stop
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;重启：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sudo apachectl restart
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;查看Apache版本：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;httpd -v
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;在启动Apache后，在浏览器中输入&lt;code class=&quot;highlighter-rouge&quot;&gt;http://localhost&lt;/code&gt;，你会看见“It works！”字样。
+你可以查看Apache的配置文件是否有错，通过输入如下命令：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;apachectl configtest
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;在&lt;code class=&quot;highlighter-rouge&quot;&gt;http://localhost&lt;/code&gt;中，你展示的文件位于&lt;code class=&quot;highlighter-rouge&quot;&gt;/Library/WebServer/Documents/&lt;/code&gt;这个系统目录下，另一个web根目录是用户的&lt;code class=&quot;highlighter-rouge&quot;&gt;~/Sites&lt;/code&gt;目录，这个目录默认是不存在的，用户可以自己创建，创建完成之后，你会发现这个文件夹图标有一个特殊的唯一的图标，如下图所示：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/apache_php_mysql/user-level-webroot-sites-folder.png&quot; alt=&quot;user-level-webroot-sites-folder&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;之后，我们需要在&lt;code class=&quot;highlighter-rouge&quot;&gt;/etc/apache2/users/&lt;/code&gt;目录下添加一个&lt;code class=&quot;highlighter-rouge&quot;&gt;username.conf&lt;/code&gt;文件，具体做法如下，在终端输入如下命令：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;cd /etc/apache2/users
+
+sudo nano username.conf
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;然后在username.conf中输入如下代码：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;Directory &quot;/Users/username/Sites/&quot;&amp;gt;
+AllowOverride All
+Options Indexes MultiViews FollowSymLinks
+Require all granted
+&amp;lt;/Directory&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;其中&lt;code class=&quot;highlighter-rouge&quot;&gt;username&lt;/code&gt;为当前账户的名称，之后按&lt;code class=&quot;highlighter-rouge&quot;&gt;ctrl&lt;/code&gt;+&lt;code class=&quot;highlighter-rouge&quot;&gt;x&lt;/code&gt;，再按&lt;code class=&quot;highlighter-rouge&quot;&gt;y&lt;/code&gt;保存退出，该文件的属性应该如下&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;-rw-r--r--  1 root  wheel  127  5 10 16:55 natsu.conf
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;输入&lt;code class=&quot;highlighter-rouge&quot;&gt;ls -l&lt;/code&gt;可查看文件属性。&lt;/p&gt;
+
+&lt;p&gt;如果你的文件属性和上面有所不同，可通过如下命令来更改：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sudo chmod 644 username.conf
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;接下来，你需要做的是打开&lt;code class=&quot;highlighter-rouge&quot;&gt;http.conf&lt;/code&gt;并开放一些modules。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sudo nano /etc/apache2/httpd.conf
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;取消以下modules的注释：(删除语句前面的&lt;code class=&quot;highlighter-rouge&quot;&gt;#&lt;/code&gt;号)&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;LoadModule authz_core_module libexec/apache2/mod_authz_core.so
+
+LoadModule authz_host_module libexec/apache2/mod_authz_host.so
+
+LoadModule userdir_module libexec/apache2/mod_userdir.so
+
+LoadModule include_module libexec/apache2/mod_include.so
+
+LoadModule rewrite_module libexec/apache2/mod_rewrite.so
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;如果你想运行php的话，你还需要取消这行代码的注释：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;LoadModule php5_module libexec/apache2/libphp5.so
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;之后，你需要取消如下的注释，来允许用户文件路径。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Include /private/etc/apache2/extra/httpd-userdir.conf
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;打开另一个Apache配置文件：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sudo nano /etc/apache2/extra/httpd-userdir.conf
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;并取消如下内容的注释：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Include /private/etc/apache2/users/*.conf
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;保存并退出nano，之后重启Apache。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sudo apachectl restart
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;在浏览器输入&lt;code class=&quot;highlighter-rouge&quot;&gt;http://localhost/~username/&lt;/code&gt;，你会看见如下页面：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/apache_php_mysql/osx-yosemite-user-site.png&quot; alt=&quot;osx-yosemite-user-site&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;php&quot;&gt;PHP&lt;/h2&gt;
+&lt;p&gt;要使用php，只需要在&lt;code class=&quot;highlighter-rouge&quot;&gt;httpd.conf&lt;/code&gt;中取消一行注释内容即可：
+打开&lt;code class=&quot;highlighter-rouge&quot;&gt;httpd.conf&lt;/code&gt;：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sudo nano /etc/apache2/httpd.conf
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;取消如下内容的注释：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;LoadModule php5_module libexec/apache2/libphp5.so
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;之后，重启Apache即可。&lt;/p&gt;
+
+&lt;h2 id=&quot;mysql&quot;&gt;MySQL&lt;/h2&gt;
+&lt;p&gt;在OSX 10.11 中并不自带MySQL，因此你需要&lt;a href=&quot;http://dev.mysql.com/downloads/mysql/&quot;&gt;下载&lt;/a&gt;相应版本的MySQL,直接选择&lt;code class=&quot;highlighter-rouge&quot;&gt;DMG Archive&lt;/code&gt;格式的压缩包下载即可。之后按照步骤安装，安装途中会出现如下弹窗，你需要记住这个初始密码（root@localhoost:后面的字符串）。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/apache_php_mysql/mysql-root-password.png&quot; alt=&quot;mysql-root-password&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;打开&lt;code class=&quot;highlighter-rouge&quot;&gt;系统偏好设置&lt;/code&gt;,在最底下的那一排，你会发现&lt;code class=&quot;highlighter-rouge&quot;&gt;MySQL&lt;/code&gt;的图标，点击它，之后点击&lt;code class=&quot;highlighter-rouge&quot;&gt;Start MySQL Server&lt;/code&gt;,或者你可以直接通过命令行来开关MySQL。&lt;/p&gt;
+
+&lt;p&gt;打开：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sudo launchctl load -F  /Library/LaunchDaemons/com.oracle.oss.mysql.mysqld.plist
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;关闭：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sudo launchctl unload -F  /Library/LaunchDaemons/com.oracle.oss.mysql.mysqld.plist
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;查看版本信息：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/usr/local/mysql/bin/mysql -v -u root -p
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;如果你不想每次使用&lt;code class=&quot;highlighter-rouge&quot;&gt;mysql&lt;/code&gt;都输入这么长的路径，你可以将&lt;code class=&quot;highlighter-rouge&quot;&gt;mysql&lt;/code&gt;的路径配置到你的&lt;code class=&quot;highlighter-rouge&quot;&gt;shell&lt;/code&gt;路径中。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;cd ; nano .bash_profile
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;输入：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;export PATH=&quot;/usr/local/mysql/bin:$PATH&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;之后使配置文件生效：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;source ~/.bash_profile
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;接下来你就可以直接使用如下命令了：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;mysql -v -u root -p
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;改变&lt;code class=&quot;highlighter-rouge&quot;&gt;MySQL&lt;/code&gt;的密码方法如下：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/usr/local/mysql/bin/mysqladmin -u root -p&#39;temppassword&#39; password &#39;newpassword&#39;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;解决2002 MySQL Socket中的问题：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sudo mkdir /var/mysql
+
+sudo ln -s /tmp/mysql.sock /var/mysql/mysql.sock
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;phpmyadmin&quot;&gt;phpMyAdmin&lt;/h2&gt;
+
+&lt;p&gt;下载&lt;a href=&quot;https://www.phpmyadmin.net/downloads/&quot;&gt;phpMyAdmin&lt;/a&gt;,将解压后的文件夹&lt;code class=&quot;highlighter-rouge&quot;&gt;phpmyadmin&lt;/code&gt;移动到&lt;code class=&quot;highlighter-rouge&quot;&gt;~/Sites&lt;/code&gt;目录下。&lt;/p&gt;
+
+&lt;p&gt;创建config文件夹：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;mkdir ~/Sites/phpmyadmin/config
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;设置文件夹权限：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;chmod o+w ~/Sites/phpmyadmin/config
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;在浏览器中输入&lt;code class=&quot;highlighter-rouge&quot;&gt;http://localhost/~username/phpmyadmin/setup/&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;选择&lt;code class=&quot;highlighter-rouge&quot;&gt;New server&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/apache_php_mysql/phpmyadmin-set-new-server.png&quot; alt=&quot;phpmyadmin-set-new-server&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;选择&lt;code class=&quot;highlighter-rouge&quot;&gt;Authentication&lt;/code&gt;,输入user和password,之后点&lt;code class=&quot;highlighter-rouge&quot;&gt;Save&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/apache_php_mysql/phpmyadmin-set-new-server-mysql-password.png&quot; alt=&quot;phpmyadmin-set-new-server-mysql-password&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;回到之前页面，你会发现&lt;code class=&quot;highlighter-rouge&quot;&gt;servers&lt;/code&gt;下多了一项，点击&lt;code class=&quot;highlighter-rouge&quot;&gt;Save&lt;/code&gt;按钮。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/apache_php_mysql/phpmyadmin-save-config.png&quot; alt=&quot;phpmyadmin-save-config&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;回到之前创建的&lt;code class=&quot;highlighter-rouge&quot;&gt;config&lt;/code&gt;文件夹，你会发现多了一个&lt;code class=&quot;highlighter-rouge&quot;&gt;config.inc.php&lt;/code&gt;，将它移动到&lt;code class=&quot;highlighter-rouge&quot;&gt;/phpmyadmin&lt;/code&gt;文件夹，之后删除空的&lt;code class=&quot;highlighter-rouge&quot;&gt;config&lt;/code&gt;文件夹。&lt;/p&gt;
+
+&lt;p&gt;现在，打开&lt;code class=&quot;highlighter-rouge&quot;&gt;http://localhost/~username/phpmyadmin/&lt;/code&gt;,你会发现你可以连接到MySQL数据库了。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/apache_php_mysql/phpmyadmin-4-no-frames.png&quot; alt=&quot;phpmyadmin-4-no-frames&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;要更新&lt;code class=&quot;highlighter-rouge&quot;&gt;phpmyadmin&lt;/code&gt;的话，只需下载最新的版本，替换掉&lt;code class=&quot;highlighter-rouge&quot;&gt;config.inc.php&lt;/code&gt;文件即可。&lt;/p&gt;
+
+&lt;h2 id=&quot;permissons&quot;&gt;Permissons&lt;/h2&gt;
+&lt;p&gt;要想在本地没有权限限制的情况下运行一个网站，最好设置web根目录和其内容是可写入的。&lt;/p&gt;
+
+&lt;p&gt;如果，你有一个网站文件放在&lt;code class=&quot;highlighter-rouge&quot;&gt;~/Sites/testsite&lt;/code&gt;下，你可以通过如下方法把它设置为可写的：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sudo chmod -R a+w ~/Sites/testsite
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;如果你担心安全问题，不想让所有人都可以写入，你可以将所有者设置成&lt;code class=&quot;highlighter-rouge&quot;&gt;Apache _www&lt;/code&gt;,但是在操作文件时你需要以管理员身份进行多次验证你不是所有者。你可以这样做：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sudo chown -R _www ~/Sites/testsite
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;这将使文件夹的内容归Apache用户所有。&lt;/p&gt;
+
+&lt;p&gt;如果你的网站放在系统文件目录下，你还需要这样做：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sudo chown -R _www /Library/WebServer/Documents/testsite
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;做完这些，你就可以在OSX EI Capitan本地运行一个AMP堆栈了。&lt;/p&gt;
+
+&lt;p&gt;&lt;br /&gt;
+&lt;br /&gt;
+原文地址：&lt;a href=&quot;https://coolestguidesontheplanet.com/get-apache-mysql-php-and-phpmyadmin-working-on-osx-10-11-el-capitan/&quot;&gt;https://coolestguidesontheplanet.com/get-apache-mysql-php-and-phpmyadmin-working-on-osx-10-11-el-capitan/&lt;/a&gt;&lt;/p&gt;
+</description>
+        <pubDate>Tue, 24 May 2016 00:00:00 +0800</pubDate>
+        <link>https://moenatsu.github.io/2016/05/apache-php-mysql/</link>
+        <guid isPermaLink="true">https://moenatsu.github.io/2016/05/apache-php-mysql/</guid>
+        
+        <category>Mac</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>Mac终端使用Tips</title>
+        <description>&lt;p&gt;本文主要总结了一些常用的mac终端命令行操作。熟练使用 command line 可以大大提高工作效率。&lt;/p&gt;
+
+&lt;h2 id=&quot;mac&quot;&gt;个性化Mac终端&lt;/h2&gt;
+&lt;p&gt;打开终端，首先映入眼帘的文字就是命令提示符了。提示符的状态是通过PS参数来设置的。基本的颜色代码和参数如下：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# PS的作用
+PS1	提示文字和颜色
+PS2	指定光标	 
+# Reset
+ENDCOLOR=&#39;\e[0m&#39;
+# Regular Colors
+Black=&#39;\e[0;30m&#39;	# Black
+Red=&#39;\e[0;31m&#39;		# Red
+Green=&#39;\e[0;32m&#39;	# Green
+Yellow=&#39;\e[0;33m&#39; 	# Yellow
+Blue=&#39;\e[0;34m&#39;		# Blue
+Purple=&#39;\e[0;35m&#39;	# Purple
+Cyan=&#39;\e[0;36m&#39;		# Cyan
+White=&#39;\e[0;37m&#39;	# White
+
+# 参数的含义
+\n 换行
+\r 回车
+\d 当前日期
+\t 当前时间（24小时制）
+\h 主机名（短）
+\u 当前用户名
+\$ root用户显示#,普通用户显示$
+\w 当前所在目录（短）
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;通过使用上面的代码和参数来实现自己想要的效果。具体操作如下:&lt;/p&gt;
+
+&lt;p&gt;打开终端，输入&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;vi .bash_profile
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;在.bash_profile文件中，设置想要的提示符显示方式，如下是本人的一些配置：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# xTerm-256color
+export LS_OPTIONS=&#39;--color=auto&#39;
+export CLICOLOR=&#39;Yes&#39;
+export LSCOLORS=&#39;Exfxcxdxbxegedabagacad&#39;
+
+# Modify Terminal Prompt and Color
+case $(id -u) in
+	0)
+	STARTCOLOUR=&#39;\[\e[0;32m\]&#39;;
+		;;
+	*)
+	STARTCOLOUR=&#39;\[\e[0;35m\]&#39;;
+	;;
+esac
+ENDCOLOR=&quot;\[\e[0m\]&quot;
+UNDERLINEBLUE=&quot;\[\e[4;34m\]&quot;
+MYWORD=&quot;🐶 🐶 🐶 :&quot;
+PS1=&quot;\n$STARTCOLOUR$MYWORD$ENDECOLOR $UNDERLINEBLUE\w$ENDCOLOR\n\$ &quot;;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;其中，&lt;code class=&quot;highlighter-rouge&quot;&gt;xTerm-256color&lt;/code&gt;部分，是为了让执行 &lt;code class=&quot;highlighter-rouge&quot;&gt;ls &lt;/code&gt;命令的时候不同的文件类型能够用颜色来区别，开启了 &lt;code class=&quot;highlighter-rouge&quot;&gt;ls Color&lt;/code&gt;功能。同时，要确定 &lt;code class=&quot;highlighter-rouge&quot;&gt;偏好设置-描述文件-高级-Terminfo &lt;/code&gt;声明终端为： &lt;code class=&quot;highlighter-rouge&quot;&gt;xterm-256color &lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;这之后重启终端后就可以看到效果了&lt;/p&gt;
+
+&lt;h2 id=&quot;section&quot;&gt;常用终端命令&lt;/h2&gt;
+
+&lt;h3 id=&quot;man&quot;&gt;man&lt;/h3&gt;
+&lt;p&gt;大多数命令都会包含一个使用指南，会告诉你任何你需要知道的关于这个命令的所有细节，在命令行中输入 &lt;code class=&quot;highlighter-rouge&quot;&gt;man command-name &lt;/code&gt;即可获取。&lt;/p&gt;
+
+&lt;p&gt;使用上下左右箭头来移动翻页，按&lt;code class=&quot;highlighter-rouge&quot;&gt; Q &lt;/code&gt;来退出使用指南界面。&lt;/p&gt;
+
+&lt;h3 id=&quot;pwd&quot;&gt;pwd&lt;/h3&gt;
+&lt;p&gt;显示当前目录的绝对路径。&lt;/p&gt;
+
+&lt;h3 id=&quot;cd&quot;&gt;cd&lt;/h3&gt;
+&lt;p&gt;改变当前目录到你指定的目录。如果你不指定，则会返回你的 home folder。&lt;code class=&quot;highlighter-rouge&quot;&gt;cd ..&lt;/code&gt;返回上一个指定目录&lt;/p&gt;
+
+&lt;h3 id=&quot;ls&quot;&gt;ls&lt;/h3&gt;
+&lt;p&gt;查看指定目录下的文件。&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;ls -la&lt;/code&gt;可查看隐藏文件。添加了&lt;code class=&quot;highlighter-rouge&quot;&gt;-l&lt;/code&gt;选项，目的是控制输出格式。如果你注意输出内容的话，会发现还包括.和..两项，它们分别表示当前文件夹和父文件夹。如果你不想显示这两项，只需要把&lt;code class=&quot;highlighter-rouge&quot;&gt;-a&lt;/code&gt;改成&lt;code class=&quot;highlighter-rouge&quot;&gt;-A&lt;/code&gt;即可。&lt;/p&gt;
+
+&lt;h3 id=&quot;cat&quot;&gt;cat&lt;/h3&gt;
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;cat&lt;/code&gt;是“concatenate”的意思，会按顺序读取文件并输出到 Terminal 窗口，语法为cat后接你需要查看的文件的路径。&lt;code class=&quot;highlighter-rouge&quot;&gt;cat&lt;/code&gt;命令也可以用»来增加文本文件的内容，例如命令&lt;code class=&quot;highlighter-rouge&quot;&gt;cat ../textOne.txt &amp;gt;&amp;gt; textTwo.txt&lt;/code&gt;会把 textOne.txt 的内容添加到 textTwo.txt 的结尾。&lt;/p&gt;
+
+&lt;h3 id=&quot;less&quot;&gt;less&lt;/h3&gt;
+&lt;p&gt;这个命令更适合用来查看长文本文件，因为它会允许你查找文本。语法为 &lt;code class=&quot;highlighter-rouge&quot;&gt;less&lt;/code&gt;后接文件路径，和&lt;code class=&quot;highlighter-rouge&quot;&gt;cat&lt;/code&gt;一样。用&lt;code class=&quot;highlighter-rouge&quot;&gt;less&lt;/code&gt;命令打开的文件其实和你查看命令使用指南的时候使用的是一个查看器，所以操作是相同的，同样可以使用箭头来上下移动文本，使用空格来翻页，输入&lt;code class=&quot;highlighter-rouge&quot;&gt;/&lt;/code&gt;和关键字来按照关键字搜索，按&lt;code class=&quot;highlighter-rouge&quot;&gt;Q&lt;/code&gt;来退出使用指南页面。除此之外，按&lt;code class=&quot;highlighter-rouge&quot;&gt;V&lt;/code&gt;键来使用&lt;code class=&quot;highlighter-rouge&quot;&gt;vi&lt;/code&gt;文本编辑器。&lt;/p&gt;
+
+&lt;h3 id=&quot;which&quot;&gt;which&lt;/h3&gt;
+&lt;p&gt;这个命令会定位某个命令的文件路径。换言之，它会告诉你你执行某个具体命令的时候，在使用哪个文件。语法为&lt;code class=&quot;highlighter-rouge&quot;&gt;which&lt;/code&gt;后接某个命令。&lt;/p&gt;
+
+&lt;h3 id=&quot;file&quot;&gt;file&lt;/h3&gt;
+&lt;p&gt;这个命令会尝试根据文件的内容输出文件类型。如果一个文件缺失了扩展名，那么这个命令可能会非常有用。语法为&lt;code class=&quot;highlighter-rouge&quot;&gt;file&lt;/code&gt;后接文件路径。&lt;/p&gt;
+
+&lt;h3 id=&quot;find&quot;&gt;find&lt;/h3&gt;
+&lt;p&gt;这个命令用来根据搜索关键词定位文件路径。 &lt;code class=&quot;highlighter-rouge&quot;&gt;find&lt;/code&gt;命令不使用 Spotlight 搜索服务，但是它允许你设置非常具体的搜索条件，以及通配符。语法为&lt;code class=&quot;highlighter-rouge&quot;&gt;find&lt;/code&gt;后接搜索的起始路径，后接定义搜索的选项，后接搜索内容（包含在引号里）。&lt;/p&gt;
+
+&lt;h3 id=&quot;wildcard-characters&quot;&gt;使用通配符（Wildcard Characters）&lt;/h3&gt;
+&lt;p&gt;下面是常用的通配符：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;星号（＊，Asterisk）——代表任何长度的任何字符。例如&lt;code class=&quot;highlighter-rouge&quot;&gt;*.tiff&lt;/code&gt;代表所有格式为tiff的文件。&lt;/li&gt;
+  &lt;li&gt;问号（?，Question mark）——代表任何单个字符。例如&lt;code class=&quot;highlighter-rouge&quot;&gt;b?ok&lt;/code&gt;匹配 book 但是不匹配 brook。&lt;/li&gt;
+  &lt;li&gt;方括号（[]，Square brackets）——定义一定范围的字符，例如&lt;code class=&quot;highlighter-rouge&quot;&gt;[Dd]ocument&lt;/code&gt;匹配 Document 以及 document；&lt;code class=&quot;highlighter-rouge&quot;&gt;doc[1-9]&lt;/code&gt;匹配doc1, doc2, …, doc9。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;配合使用上面三种通配符可以大大提高效率。&lt;/p&gt;
+
+&lt;h3 id=&quot;mkdir&quot;&gt;mkdir&lt;/h3&gt;
+&lt;p&gt;用来创建文件夹，语法为&lt;code class=&quot;highlighter-rouge&quot;&gt;mkdir&lt;/code&gt;后接新文件夹的目录。可以用-p选项，来一起创建路径中不存在的文件夹（这样你就不用挨层创建了）。&lt;/p&gt;
+
+&lt;h3 id=&quot;cp&quot;&gt;cp&lt;/h3&gt;
+&lt;p&gt;用来把文件从一处复制到另一处。语法为&lt;code class=&quot;highlighter-rouge&quot;&gt;cp&lt;/code&gt;后接原始路径，后接目标路径。如果你想复制整个文件夹和所有内容，需要添加&lt;code class=&quot;highlighter-rouge&quot;&gt;-R&lt;/code&gt;选项。如果指定的目标路径不含文件名，则 cp 命令会按原名复制。如果指定的目标路径包括文件名，则会复制为你指定的文件名。如果仅指定新文件名，则会在原处以新名称创建文件副本。注意，系统会自动替换同名文件而不出现提示。&lt;/p&gt;
+
+&lt;h3 id=&quot;mv&quot;&gt;mv&lt;/h3&gt;
+&lt;p&gt;用来移动文件。语法为&lt;code class=&quot;highlighter-rouge&quot;&gt;mv&lt;/code&gt;后接原路径，后接新路径。mv 的指定路径规则和 cp 是一样的（没错，如果仅指定新文件名，它就成了重命名命令）。&lt;/p&gt;
+
+&lt;h3 id=&quot;rm&quot;&gt;rm&lt;/h3&gt;
+&lt;p&gt;会永久删除文件。注意，command-line中没有废纸篓。语法为&lt;code class=&quot;highlighter-rouge&quot;&gt;rm&lt;/code&gt;后接文件路径。然而，使用 rm 命令删除的文件有可能可以通过数据恢复工具恢复。如果希望安全删除文件，可以使用&lt;code class=&quot;highlighter-rouge&quot;&gt;srm&lt;/code&gt;命令。&lt;/p&gt;
+
+&lt;h3 id=&quot;rmdirrm--r&quot;&gt;rmdir和rm -R&lt;/h3&gt;
+&lt;p&gt;rmdir是“remove directory”的缩写，这个命令会永久删除文件夹。再强调一遍，CLI 中木有废纸篓。语法为&lt;code class=&quot;highlighter-rouge&quot;&gt;rmdir&lt;/code&gt;后接希望删除目录的路径。然而，rmdir 命令无法删除含有任何其他文件的文件夹，所以大多数情形下&lt;code class=&quot;highlighter-rouge&quot;&gt;rmdir&lt;/code&gt;命令是不适用的。不过，你可以利用&lt;code class=&quot;highlighter-rouge&quot;&gt;rm&lt;/code&gt;添加&lt;code class=&quot;highlighter-rouge&quot;&gt;-R&lt;/code&gt;选项来删除文件夹及包含的所有文件。&lt;/p&gt;
+
+&lt;h3 id=&quot;vi&quot;&gt;vi&lt;/h3&gt;
+&lt;p&gt;vi 是 command line 中最常见的文本编辑器。用&lt;code class=&quot;highlighter-rouge&quot;&gt;vi&lt;/code&gt;打开文本文件，只需要输入vi后接文件路径即可。Mac OS X 还提供了&lt;code class=&quot;highlighter-rouge&quot;&gt;nano&lt;/code&gt;，一个更加现代的文本编辑器。它也更加方便，例如在底部有常用的快捷键列表.&lt;/p&gt;
+
+&lt;p&gt;和&lt;code class=&quot;highlighter-rouge&quot;&gt;less&lt;/code&gt;命令类似，&lt;code class=&quot;highlighter-rouge&quot;&gt;vi&lt;/code&gt;命令会占用整个 Terminal 空间来显示文件内容。打开后，在“command模式”，vi 会等你输入一些预定义字符来告诉 vi 你想做什么。你也可以使用键盘上的箭头键单纯地浏览文件。你想编辑时，按&lt;code class=&quot;highlighter-rouge&quot;&gt;I&lt;/code&gt;开始（会进入编辑模式）。文字会插入到光标处。如果你想保存，需要先退出编辑模式进入 command 模式。方法是按下esc键。回到 command 模式后，输入&lt;code class=&quot;highlighter-rouge&quot;&gt;:wq&lt;/code&gt;,回车。如果你不想保存，在 command 模式输入&lt;code class=&quot;highlighter-rouge&quot;&gt;:q!&lt;/code&gt;，回车退出。&lt;/p&gt;
+
+&lt;h3 id=&quot;sudo&quot;&gt;sudo&lt;/h3&gt;
+&lt;p&gt;用sudo执行一个命令会使用 root 账户权限。&lt;/p&gt;
+
+&lt;h3 id=&quot;sqlite3&quot;&gt;sqlite3&lt;/h3&gt;
+&lt;p&gt;mac自带sqlite3命令行工具。&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;sqlite3 filename.sqlitedb&lt;/code&gt;连接到指定的数据库文件。&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;sqlite&amp;gt;.exit&lt;/code&gt;退出SQLite客户端软件。&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;sqlite&amp;gt;.tables&lt;/code&gt;显示用于创建一个表的SQL语句。&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;sqlite&amp;gt;.dump table-name&lt;/code&gt;将整个表的内容转储成SQL语句。&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;sqlite&amp;gt;.output filename&lt;/code&gt;将后续命令输出重定位到磁盘上的文件。&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;sqlite&amp;gt;.headers on&lt;/code&gt;打开表头显示。&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;sqlite&amp;gt;select * from table-name；&lt;/code&gt;执行SQL语句（注：sql语句最后要加”;”）。&lt;/p&gt;
+
+&lt;h3 id=&quot;nslookup&quot;&gt;nslookup&lt;/h3&gt;
+&lt;p&gt;nslookup(name server lookup)是一个程序的名字，是一个用于查询Internet域名信息或诊断DNS服务器问题的工具。用户通过输入一个主机名可以发现相应的IP地址，相反的，输入IP地址可以找出主机名。用法如下：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;nslookup domain [dns-server]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;如果没有指定dns-server，将会使用系统默认的服务器。&lt;/p&gt;
+
+&lt;p&gt;例如输入：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;nslookup www.baidu.com
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;返回的信息是：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Server:		8.8.8.8
+Address:	8.8.8.8#53
+
+Non-authoritative answer:
+www.baidu.com	canonical name = www.a.shifen.com.
+Name:	www.a.shifen.com
+Address: 119.75.213.51
+Name:	www.a.shifen.com
+Address: 119.75.213.50
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;还可以指定一些其他参数，来查询更具体信息。例如：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;nslookup -qt=type domain [dns-server]
+
+nslookup –d [其他参数] domain [dns-server]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;kill&quot;&gt;kill&lt;/h3&gt;
+&lt;p&gt;kill命令用来终止一个进程。用法为：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;kill [－s signal | －p] [－a] pid ...
+kill －l [signal]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;其中&lt;code class=&quot;highlighter-rouge&quot;&gt;－s&lt;/code&gt;指定发送的信号，&lt;code class=&quot;highlighter-rouge&quot;&gt;－p&lt;/code&gt;模拟发送信号，&lt;code class=&quot;highlighter-rouge&quot;&gt;－l&lt;/code&gt;：指定信号的名称列表，&lt;code class=&quot;highlighter-rouge&quot;&gt;pid&lt;/code&gt;要中止进程的ID号，&lt;code class=&quot;highlighter-rouge&quot;&gt;signal&lt;/code&gt;表示信号。&lt;/p&gt;
+
+&lt;p&gt;例如：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;kill 1105
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;将会终止PID为1105的进程。&lt;/p&gt;
+
+&lt;h3 id=&quot;ping&quot;&gt;ping&lt;/h3&gt;
+&lt;p&gt;ping命令用来检测主机网络接口状态，使用方法如下：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ping [-dfnqrRv][-c][-i][-I][-l][-p][-s][-t] IP地址
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;-d&lt;/code&gt;：使用Socket的SO_DEBUG功能。
+&lt;code class=&quot;highlighter-rouge&quot;&gt;-c&lt;/code&gt;：设置完成要求回应的次数。
+&lt;code class=&quot;highlighter-rouge&quot;&gt;-f&lt;/code&gt;：极限检测。
+&lt;code class=&quot;highlighter-rouge&quot;&gt;-i&lt;/code&gt;：指定收发信息的间隔秒数。
+&lt;code class=&quot;highlighter-rouge&quot;&gt;-I&lt;/code&gt;：网络界面使用指定的网络界面送出数据包。
+&lt;code class=&quot;highlighter-rouge&quot;&gt;-l&lt;/code&gt;：前置载入，设置在送出要求信息之前，先行发出的数据包。
+&lt;code class=&quot;highlighter-rouge&quot;&gt;-n&lt;/code&gt;：只输出数值。
+&lt;code class=&quot;highlighter-rouge&quot;&gt;-p&lt;/code&gt;：设置填满数据包的范本样式。
+&lt;code class=&quot;highlighter-rouge&quot;&gt;-q&lt;/code&gt;：不显示指令执行过程，开头和结尾的相关信息除外。
+&lt;code class=&quot;highlighter-rouge&quot;&gt;-r&lt;/code&gt;：忽略普通的Routing Table，直接将数据包送到远端主机上。
+&lt;code class=&quot;highlighter-rouge&quot;&gt;-R&lt;/code&gt;：记录路由过程。
+&lt;code class=&quot;highlighter-rouge&quot;&gt;-s&lt;/code&gt;：设置数据包的大小。
+&lt;code class=&quot;highlighter-rouge&quot;&gt;-t&lt;/code&gt;：设置存活数值TTL的大小。
+&lt;code class=&quot;highlighter-rouge&quot;&gt;-v&lt;/code&gt;：详细显示指令的执行过程。&lt;/p&gt;
+
+&lt;h3 id=&quot;shutdown&quot;&gt;shutdown&lt;/h3&gt;
+&lt;p&gt;shutdown命令可用来设置mac的定时关机、重启、睡眠。用法如下：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;shutdown [-h | -r | -s] time
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;其中，h/r/s分别代表关机/重启/睡眠，time表示时间。如果要立即执行，可将time设置为now。如果，要取消的话，使用kill命令即可。&lt;/p&gt;
+
+&lt;h3 id=&quot;mdfind&quot;&gt;mdfind&lt;/h3&gt;
+&lt;p&gt;mdfind命令可使用Spotlight搜索服务来搜索关键字，它会返回所有匹配关键字的文件路径。用法如下：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;mdfind image  #查找包含image关键字的文件
+mdfind -onlyin ~ image	#查找~目录下，包含image关键字的文件
+mdfind -name stdlib.h	#查找名为stdlib.h的文件
+mdfind -live MyFavoriteAuthor	#持续查找MyFavoriteAuthor文件
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;参考文章&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://www.renfei.org/blog/mac-os-x-terminal-101.html&quot;&gt;《Mac OS X Terminal 101：终端使用初级教程》&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://imwuyu.me/talk-about/modify-mac-osx-terminal-prompt-and-color.html&quot;&gt;《给 Terminal 施点魔法》&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.cnblogs.com/earl86/archive/2009/02/06/1666439.html&quot;&gt;《常用cmd命令——nslookup命令》&lt;/a&gt;&lt;/p&gt;
+</description>
+        <pubDate>Wed, 27 Apr 2016 00:00:00 +0800</pubDate>
+        <link>https://moenatsu.github.io/2016/04/mac-command-line/</link>
+        <guid isPermaLink="true">https://moenatsu.github.io/2016/04/mac-command-line/</guid>
+        
+        <category>Mac</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>如何在Mac终端升级ruby版本【转】</title>
+        <description>&lt;p&gt;原文地址：&lt;a href=&quot;https://segmentfault.com/a/1190000003784636 &quot;&gt;https://segmentfault.com/a/1190000003784636&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;rvm是什么？为什么要安装rvm呢，因为rvm可以让你拥有多个版本的Ruby，并且可以在多个版本之间自由切换。&lt;/p&gt;
+
+&lt;h2 id=&quot;rvm&quot;&gt;第一步：安装rvm&lt;/h2&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ curl -L get.rvm.io | bash -s stable
+$ source ~/.rvm/scripts/rvm
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;等待终端加载完毕,后输入：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;rvm -v
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;如果能显示版本好则安装成功了。&lt;/p&gt;
+
+&lt;h2 id=&quot;ruby&quot;&gt;第二步：安装ruby&lt;/h2&gt;
+
+&lt;p&gt;列出ruby可安装的版本信息&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;rvm list known
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;安装一个ruby版本&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;rvm install 2.2.4
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;如果想设置为默认版本，可以用这条命令来完成&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;rvm use 2.2.4 --default
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;查看已安装的ruby&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;rvm list
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;卸载一个已安装ruby版本&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;rvm remove 2.2.4
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;section&quot;&gt;第三步：更换源&lt;/h2&gt;
+
+&lt;p&gt;查看已有的源&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;gem source
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;显示会如下：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;CURRENT SOURCES
+http://rubygems.org/
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;然后我们需要来修改更换源（由于国内被墙）所以要把源切换至淘宝镜像服务器 在终端执行以下命令&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ gem update --system
+$ gem uninstall rubygems-update
+$ gem sources -r http://rubygems.org/
+$ gem sources -a https://ruby.taobao.org
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+</description>
+        <pubDate>Mon, 25 Apr 2016 00:00:00 +0800</pubDate>
+        <link>https://moenatsu.github.io/2016/04/mac-ruby/</link>
+        <guid isPermaLink="true">https://moenatsu.github.io/2016/04/mac-ruby/</guid>
+        
+        <category>Mac</category>
+        
+        
+      </item>
+    
+  </channel>
+</rss>
