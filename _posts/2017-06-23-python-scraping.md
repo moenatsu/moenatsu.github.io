@@ -7,7 +7,7 @@ tag: python
 
 ---
 
-## 准备工作
+## BeautifulSoup
 安装BeautifulSoup
 
 	$ pip3 install beautifulsoup4
@@ -20,6 +20,19 @@ tag: python
 	bsObj = BeautifulSoup(html.read(), "html.parser")
 	print(bsObj.h1)
 	
+对于一个标签对象，可以用下面的代码获取它的全部属性:
+
+	myTag.attrs
+要注意这行代码返回的是一个 Python 字典对象，可以获取和操作这些属性。比如要获取图 片的资源位置 src，可以用下面这行代码:
+
+	myImgTag.attrs["src"]
+     
+Lambda表达式
+获取有两个属性的标签:
+
+     soup.findAll(lambda tag: len(tag.attrs) == 2)
+     
+## 虚拟环境
 用虚拟环境保存库文件:
 
 当一个 Python 库不用虚拟环境安装的时候，你实际上是全局安装它。这通常需要有管理员权限，或者以root身份安装，这个库文件对设备上的每个用户和每个项目都是存在的。这时可以选择用虚拟环境。
@@ -141,22 +154,12 @@ tag: python
 更多Scrapy的用法可参见这里：[http://doc.scrapy.org/en/latest/](http://doc.scrapy.org/en/latest/)
 
 
-## BeautifulSoup的使用
-对于一个标签对象，可以用下面的代码获取它的全部属性:
+## urlopen
 
-	myTag.attrs
-要注意这行代码返回的是一个 Python 字典对象，可以获取和操作这些属性。比如要获取图 片的资源位置 src，可以用下面这行代码:
-
-	myImgTag.attrs["src"]
-     
-Lambda表达式
-获取有两个属性的标签:
-
-     soup.findAll(lambda tag: len(tag.attrs) == 2)
-     
 当使用`urlopen`出现如下问题时：
 
 	urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed
+	
 解决方法如下：
 
 	import ssl
@@ -167,5 +170,44 @@ Lambda表达式
 
 其他解决方法可参考[这里](https://stackoverflow.com/questions/27835619/urllib-and-ssl-certificate-verify-failed-error)
 
+## Python Requests库
 
+[Requests库](http://www.python-requests.org/)是一个擅长处理那些复杂的HTTP请求、cookie、header(响应头和请求头)等内容的 Python 第三方库。
 
+安装
+
+	$ pip install requests
+
+提交一个基本表单
+
+	import requests
+	params = {'firstname': 'Ryan', 'lastname': 'Mitchell'}
+	r = requests.post("http://pythonscraping.com/files/processing.php", data=params) print(r.text)
+
+提交文件和图像
+
+	import requests
+     files = {'uploadFile': open('../files/Python-logo.png', 'rb')}
+     r = requests.post("http://pythonscraping.com/pages/processing2.php",
+                       files=files)
+	print(r.text)
+	
+处理cookie（使用session函数）
+
+	import requests
+	session = requests.Session()
+	params = {'username': 'username', 'password': 'password'}
+	s = session.post("http://pythonscraping.com/pages/cookies/welcome.php", params) print("Cookie is set to:")
+	print(s.cookies.get_dict())
+	s = session.get("http://pythonscraping.com/pages/cookies/profile.php") 
+	print(s.text)
+	
+HTTP基本接入认证
+
+	import requests
+	from requests.auth import AuthBase
+	from requests.auth import HTTPBasicAuth
+     auth = HTTPBasicAuth('ryan', 'password')
+     r = requests.post(url="http://pythonscraping.com/pages/auth/login.php", auth=auth)
+	print(r.text)
+	
