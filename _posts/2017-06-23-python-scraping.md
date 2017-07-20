@@ -10,7 +10,7 @@ tag: python
 ## BeautifulSoup
 安装BeautifulSoup
 
-	$ pip3 install beautifulsoup4
+	$ pip install beautifulsoup4
 	
 运行BeautifulSoup
 
