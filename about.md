@@ -9,7 +9,6 @@ title: 关于我
 
 不定期的会更新一些博客。
 
-{% include comments.html %}
 
 
 
