@@ -5,16 +5,80 @@
     <description>欢迎来到我的个人站~</description>
     <link>https://moenatsu.github.io/</link>
     <atom:link href="https://moenatsu.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 12 Jul 2017 14:45:10 +0800</pubDate>
-    <lastBuildDate>Wed, 12 Jul 2017 14:45:10 +0800</lastBuildDate>
+    <pubDate>Fri, 01 Sep 2017 15:23:42 +0800</pubDate>
+    <lastBuildDate>Fri, 01 Sep 2017 15:23:42 +0800</lastBuildDate>
     <generator>Jekyll v3.1.1</generator>
     
       <item>
+        <title>Mac使用aircrack破解wifi</title>
+        <description>&lt;p&gt;本文主要讲解在Mac中如何使用&lt;a href=&quot;https://www.aircrack-ng.org&quot;&gt;Aircrack-ng&lt;/a&gt;来破解wifi密码&lt;/p&gt;
+
+&lt;h2 id=&quot;section&quot;&gt;安装&lt;/h2&gt;
+
+&lt;p&gt;可使用homebrew或者macports进行安装&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;brew install aircrack-ng
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;准备工作&lt;/h2&gt;
+&lt;p&gt;首先要用到系统自带的&lt;code class=&quot;highlighter-rouge&quot;&gt;airport&lt;/code&gt;监测附近wifi信号，给&lt;code class=&quot;highlighter-rouge&quot;&gt;airport&lt;/code&gt;创建一个软连接，使终端可以直接使用&lt;code class=&quot;highlighter-rouge&quot;&gt;airport&lt;/code&gt;命令。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sudo ln -s /System/Library/PrivateFrameworks/Apple80211.framework/Versions/A/Resources/airport /usr/local/bin/airport
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;airport&lt;/code&gt;视不同版本、不同电脑，位置可能不同&lt;/p&gt;
+
+&lt;p&gt;开始监测附近wifi&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;airport -s
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;显示的结果中，SSID 是 wifi名称，RSSI 是信号强度，CHANNEL 是信道。&lt;/p&gt;
+
+&lt;p&gt;选一个信号强的信道进行监听抓包&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;airport en0 sniff 1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;其中&lt;code class=&quot;highlighter-rouge&quot;&gt;en0&lt;/code&gt;是自己电脑的网卡地址（可通过&lt;code class=&quot;highlighter-rouge&quot;&gt;ifconfig&lt;/code&gt;查看），&lt;code class=&quot;highlighter-rouge&quot;&gt;1&lt;/code&gt;是你所选的信道&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/aircrack-ng/airport.png&quot; alt=&quot;airport&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;aircrack-ng&quot;&gt;使用aircrack-ng&lt;/h2&gt;
+
+&lt;p&gt;运行如下命令:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;aircrack-ng -w password.txt /tmp/airportSniffaVuqak.cap
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;password.txt&lt;/code&gt;为你的字典文件，&lt;code class=&quot;highlighter-rouge&quot;&gt;/tmp/airportSniffaVuqak.cap&lt;/code&gt;为你上一步抓到的包&lt;/p&gt;
+
+&lt;p&gt;就可以看到cap文件内的抓包情况，Encryption中（0 handshake）是抓包失败，（1 handshake）则是抓包成功。
+在&lt;code class=&quot;highlighter-rouge&quot;&gt;Index number of target network ?&lt;/code&gt;这里输入抓包成功的序号回车，接下来会开始跑字典破解，破解成功后会显示破解出的密码。&lt;/p&gt;
+
+&lt;p&gt;注：一个好的常用密码字典，可大大提高破解成功率。常用字典可以自己去网上搜一下。&lt;/p&gt;
+
+</description>
+        <pubDate>Tue, 29 Aug 2017 00:00:00 +0800</pubDate>
+        <link>https://moenatsu.github.io/2017/08/aircrack/</link>
+        <guid isPermaLink="true">https://moenatsu.github.io/2017/08/aircrack/</guid>
+        
+        <category>Mac</category>
+        
+        
+      </item>
+    
+      <item>
         <title>python网络数据采集</title>
-        <description>&lt;h2 id=&quot;section&quot;&gt;准备工作&lt;/h2&gt;
+        <description>&lt;h2 id=&quot;beautifulsoup&quot;&gt;BeautifulSoup&lt;/h2&gt;
 &lt;p&gt;安装BeautifulSoup&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ pip3 install beautifulsoup4
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ pip install beautifulsoup4
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
@@ -28,6 +92,22 @@ print(bsObj.h1)
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
+&lt;p&gt;对于一个标签对象，可以用下面的代码获取它的全部属性:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;myTag.attrs 要注意这行代码返回的是一个 Python 字典对象，可以获取和操作这些属性。比如要获取图 片的资源位置 src，可以用下面这行代码:
+
+myImgTag.attrs[&quot;src&quot;]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Lambda表达式
+获取有两个属性的标签:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; soup.findAll(lambda tag: len(tag.attrs) == 2)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;section&quot;&gt;虚拟环境&lt;/h2&gt;
 &lt;p&gt;用虚拟环境保存库文件:&lt;/p&gt;
 
 &lt;p&gt;当一个 Python 库不用虚拟环境安装的时候，你实际上是全局安装它。这通常需要有管理员权限，或者以root身份安装，这个库文件对设备上的每个用户和每个项目都是存在的。这时可以选择用虚拟环境。&lt;/p&gt;
@@ -160,27 +240,17 @@ $ source bin/activate
 
 &lt;p&gt;更多Scrapy的用法可参见这里：&lt;a href=&quot;http://doc.scrapy.org/en/latest/&quot;&gt;http://doc.scrapy.org/en/latest/&lt;/a&gt;&lt;/p&gt;
 
-&lt;h2 id=&quot;beautifulsoup&quot;&gt;BeautifulSoup的使用&lt;/h2&gt;
-&lt;p&gt;对于一个标签对象，可以用下面的代码获取它的全部属性:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;myTag.attrs 要注意这行代码返回的是一个 Python 字典对象，可以获取和操作这些属性。比如要获取图 片的资源位置 src，可以用下面这行代码:
-
-myImgTag.attrs[&quot;src&quot;]
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;Lambda表达式
-获取有两个属性的标签:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; soup.findAll(lambda tag: len(tag.attrs) == 2)
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;h2 id=&quot;urlopen&quot;&gt;urlopen&lt;/h2&gt;
 
 &lt;p&gt;当使用&lt;code class=&quot;highlighter-rouge&quot;&gt;urlopen&lt;/code&gt;出现如下问题时：&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed 解决方法如下：
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
-import ssl
+&lt;p&gt;解决方法如下：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;import ssl
 
 # This restores the same behavior as before.
 context = ssl._create_unverified_context()
@@ -189,6 +259,117 @@ urllib.urlopen(&quot;https://no-valid-cert&quot;, context=context)
 &lt;/div&gt;
 
 &lt;p&gt;其他解决方法可参考&lt;a href=&quot;https://stackoverflow.com/questions/27835619/urllib-and-ssl-certificate-verify-failed-error&quot;&gt;这里&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;python-requests&quot;&gt;Python Requests库&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.python-requests.org/&quot;&gt;Requests库&lt;/a&gt;是一个擅长处理那些复杂的HTTP请求、cookie、header(响应头和请求头)等内容的 Python 第三方库。&lt;/p&gt;
+
+&lt;p&gt;安装&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ pip install requests
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;提交一个基本表单&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;import requests
+params = {&#39;firstname&#39;: &#39;Ryan&#39;, &#39;lastname&#39;: &#39;Mitchell&#39;}
+r = requests.post(&quot;http://pythonscraping.com/files/processing.php&quot;, data=params) print(r.text)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;提交文件和图像&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;import requests
+ files = {&#39;uploadFile&#39;: open(&#39;../files/Python-logo.png&#39;, &#39;rb&#39;)}
+ r = requests.post(&quot;http://pythonscraping.com/pages/processing2.php&quot;,
+                   files=files)
+print(r.text)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;处理cookie（使用session函数）&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;import requests
+session = requests.Session()
+params = {&#39;username&#39;: &#39;username&#39;, &#39;password&#39;: &#39;password&#39;}
+s = session.post(&quot;http://pythonscraping.com/pages/cookies/welcome.php&quot;, params) print(&quot;Cookie is set to:&quot;)
+print(s.cookies.get_dict())
+s = session.get(&quot;http://pythonscraping.com/pages/cookies/profile.php&quot;) 
+print(s.text)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;HTTP基本接入认证&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;import requests
+from requests.auth import AuthBase
+from requests.auth import HTTPBasicAuth
+ auth = HTTPBasicAuth(&#39;ryan&#39;, &#39;password&#39;)
+ r = requests.post(url=&quot;http://pythonscraping.com/pages/auth/login.php&quot;, auth=auth)
+print(r.text)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;javascript&quot;&gt;采集JavaScript&lt;/h2&gt;
+
+&lt;p&gt;在Python中用&lt;a href=&quot;http://www.seleniumhq.org&quot;&gt;Selenium&lt;/a&gt;执行JavaScript。可使用pip安装Selenium。
+ Selenium 可以让浏览器自动加载页面，获取需要的数据，甚至页面截屏，或者判断网站上某些动作是否发生。&lt;/p&gt;
+
+&lt;p&gt;Selenium 可与[PhantomJS] (http://phantomjs.org)结合使用。PhantomJS可从官网下载。&lt;/p&gt;
+
+&lt;p&gt;下面的代码用PhantomJS库创建了一个新的Selenium WebDriver，首先用WebDriver加载页面，然后暂停执行 3 秒钟，再查看页面获取(希望已经加载完成的)内容。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;from selenium import webdriver
+import time
+driver = webdriver.PhantomJS(executable_path=&#39;PhantomJS 可执行文件的路径&#39;) 
+driver.get(&quot;http://pythonscraping.com/pages/javascript/ajaxDemo.html&quot;) time.sleep(3)
+print(driver.find_element_by_id(&#39;content&#39;).text)
+driver.close()
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;对于重定向问题，可以从页面开始加载时就“监视”DOM 中的一个元素，然后重复调用这个元素直到 Selenium 抛出一个 StaleElementReferenceException 异常；
+也就是说，元素不在页面的 DOM 里了，说明这时网站已经跳转。&lt;/p&gt;
+
+&lt;h2 id=&quot;ocr&quot;&gt;图像识别与文字处理（OCR）&lt;/h2&gt;
+
+&lt;p&gt;安装Pillow（一个python图像处理库）&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;pip install pillow
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;安装Tesseract。可使用homebrew进行安装。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;brew install tesseract
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;通过下面的命令运行 Tesseract，读取文件并把结果写到一个文本文件中:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; $tesseract text.png textoutput
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;当图片背景色是渐变的时候，处理结果会不是很理想，可使用python对图像处理后再进行识别。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;from PIL import Image 
+import subprocess
+def cleanFile(filePath, newFilePath): 
+	image = Image.open(filePath)
+	# 对图片进行阈值过滤，然后保存
+	image = image.point(lambda x: 0 if x&amp;lt;143 else 255) 
+	image.save(newFilePath)
+	# 调用系统的tesseract命令对图片进行OCR识别 
+	subprocess.call([&quot;tesseract&quot;, newFilePath, &quot;output&quot;])
+	# 打开文件读取结果
+	outputFile = open(&quot;output.txt&quot;, &#39;r&#39;) 
+	print(outputFile.read()) 
+	outputFile.close()
+ cleanFile(&quot;text_2.jpg&quot;, &quot;text_2_clean.png&quot;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
 </description>
         <pubDate>Fri, 23 Jun 2017 00:00:00 +0800</pubDate>
@@ -1032,7 +1213,12 @@ mdfind -live MyFavoriteAuthor	#持续查找MyFavoriteAuthor文件
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;h2 id=&quot;section-1&quot;&gt;参考文章&lt;/h2&gt;
+&lt;h3 id=&quot;section-1&quot;&gt;附加&lt;/h3&gt;
+&lt;p&gt;Finder查看隐藏文件快捷键 &lt;code class=&quot;highlighter-rouge&quot;&gt;shift&lt;/code&gt;+&lt;code class=&quot;highlighter-rouge&quot;&gt;command&lt;/code&gt;+&lt;code class=&quot;highlighter-rouge&quot;&gt;.&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Safari切换标签页快捷键 &lt;code class=&quot;highlighter-rouge&quot;&gt;shift&lt;/code&gt;+&lt;code class=&quot;highlighter-rouge&quot;&gt;command&lt;/code&gt;+&lt;code class=&quot;highlighter-rouge&quot;&gt;左右方向键&lt;/code&gt; 或者 &lt;code class=&quot;highlighter-rouge&quot;&gt;command&lt;/code&gt;+&lt;code class=&quot;highlighter-rouge&quot;&gt;数字键&lt;/code&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;section-2&quot;&gt;参考文章&lt;/h2&gt;
 
 &lt;p&gt;&lt;a href=&quot;https://www.renfei.org/blog/mac-os-x-terminal-101.html&quot;&gt;《Mac OS X Terminal 101：终端使用初级教程》&lt;/a&gt;&lt;/p&gt;
 

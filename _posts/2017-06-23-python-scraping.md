@@ -211,3 +211,53 @@ HTTP基本接入认证
      r = requests.post(url="http://pythonscraping.com/pages/auth/login.php", auth=auth)
 	print(r.text)
 	
+## 采集JavaScript
+
+ 在Python中用[Selenium](http://www.seleniumhq.org)执行JavaScript。可使用pip安装Selenium。
+ Selenium 可以让浏览器自动加载页面，获取需要的数据，甚至页面截屏，或者判断网站上某些动作是否发生。
+ 
+ Selenium 可与[PhantomJS] (http://phantomjs.org)结合使用。PhantomJS可从官网下载。
+ 
+ 下面的代码用PhantomJS库创建了一个新的Selenium WebDriver，首先用WebDriver加载页面，然后暂停执行 3 秒钟，再查看页面获取(希望已经加载完成的)内容。
+ 
+	from selenium import webdriver
+	import time
+	driver = webdriver.PhantomJS(executable_path='PhantomJS 可执行文件的路径') 
+	driver.get("http://pythonscraping.com/pages/javascript/ajaxDemo.html") time.sleep(3)
+	print(driver.find_element_by_id('content').text)
+	driver.close()
+
+对于重定向问题，可以从页面开始加载时就“监视”DOM 中的一个元素，然后重复调用这个元素直到 Selenium 抛出一个 StaleElementReferenceException 异常；
+也就是说，元素不在页面的 DOM 里了，说明这时网站已经跳转。
+
+## 图像识别与文字处理（OCR）
+
+安装Pillow（一个python图像处理库）
+
+	pip install pillow
+
+安装Tesseract。可使用homebrew进行安装。
+
+	brew install tesseract
+	
+通过下面的命令运行 Tesseract，读取文件并把结果写到一个文本文件中:
+
+     $tesseract text.png textoutput
+
+当图片背景色是渐变的时候，处理结果会不是很理想，可使用python对图像处理后再进行识别。
+
+	from PIL import Image 
+	import subprocess
+	def cleanFile(filePath, newFilePath): 
+		image = Image.open(filePath)
+		# 对图片进行阈值过滤，然后保存
+		image = image.point(lambda x: 0 if x<143 else 255) 
+		image.save(newFilePath)
+		# 调用系统的tesseract命令对图片进行OCR识别 
+		subprocess.call(["tesseract", newFilePath, "output"])
+		# 打开文件读取结果
+		outputFile = open("output.txt", 'r') 
+		print(outputFile.read()) 
+		outputFile.close()
+     cleanFile("text_2.jpg", "text_2_clean.png")
+     

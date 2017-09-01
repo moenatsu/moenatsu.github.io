@@ -229,7 +229,11 @@ mdfind命令可使用Spotlight搜索服务来搜索关键字，它会返回所�
 	mdfind -onlyin ~ image	#查找~目录下，包含image关键字的文件
 	mdfind -name stdlib.h	#查找名为stdlib.h的文件
 	mdfind -live MyFavoriteAuthor	#持续查找MyFavoriteAuthor文件
+	
+### 附加
+Finder查看隐藏文件快捷键 `shift`+`command`+`.`
 
+Safari切换标签页快捷键 `shift`+`command`+`左右方向键` 或者 `command`+`数字键`
 
 ## 参考文章
 
