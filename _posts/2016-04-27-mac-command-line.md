@@ -102,6 +102,9 @@ tag: Mac
 ### find
 这个命令用来根据搜索关键词定位文件路径。 `find`命令不使用 Spotlight 搜索服务，但是它允许你设置非常具体的搜索条件，以及通配符。语法为`find`后接搜索的起始路径，后接定义搜索的选项，后接搜索内容（包含在引号里）。
 
+    find . -name ".*" -delete   #搜索当前目录下以.开头的文件并删除
+    
+
 ### 使用通配符（Wildcard Characters）
 下面是常用的通配符：
 
@@ -229,6 +232,13 @@ mdfind命令可使用Spotlight搜索服务来搜索关键字，它会返回所�
 	mdfind -onlyin ~ image	#查找~目录下，包含image关键字的文件
 	mdfind -name stdlib.h	#查找名为stdlib.h的文件
 	mdfind -live MyFavoriteAuthor	#持续查找MyFavoriteAuthor文件
+	
+### osascript
+执行OSA脚本(例如：AppleScript，JavaScript等)
+
+    #将指定的图片设为桌面背景
+    osascript -e "tell application \"Finder\" to set desktop picture to POSIX file \"你的图片路径\""
+
 	
 ### 附加
 Finder查看隐藏文件快捷键 `shift`+`command`+`.`
