@@ -239,6 +239,14 @@ mdfind命令可使用Spotlight搜索服务来搜索关键字，它会返回所�
     #将指定的图片设为桌面背景
     osascript -e "tell application \"Finder\" to set desktop picture to POSIX file \"你的图片路径\""
 
+### ffmpeg命令
+音频转码
+
+	ffmpeg -i input.mp3 -acodec aac -ss 00:00:00 -t 00:00:40 output.m4a
+	
+`-acodec aac` aac编码
+`-ss 00:00:00` 起始时间
+`-t 00:00:40` 长度
 	
 ### 附加
 Finder查看隐藏文件快捷键 `shift`+`command`+`.`
